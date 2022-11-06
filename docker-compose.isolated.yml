@@ -29,10 +29,22 @@ services:
       POSTGRES_DB: app
       PGDATA: /data/postgres
     volumes:
-       - postgresql_data:/data/postgres
+      - postgresql_data:/data/postgres
     ports:
       - "5432:5432"
     restart: unless-stopped
+  migrate:
+    image: migrate/migrate
+    volumes:
+      - ./database/:/database
+    command:
+      - "-path"
+      - "/database/migrations"
+      - "-database"
+      - "postgres://admin:admin@postgresql:5432/app?sslmode=disable"
+      - "up"
+    depends_on:
+      - postgresql
 
 volumes:
   postgresql_data:
