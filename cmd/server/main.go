@@ -36,7 +36,7 @@ func main() {
 	go func() {
 		<-sig
 
-		cleanCtx, _ := context.WithTimeout(serveCtx, 30*time.Second)
+		cleanCtx, cancelCleanCtx := context.WithTimeout(serveCtx, 30*time.Second)
 
 		go func() {
 			<-cleanCtx.Done()
@@ -57,6 +57,7 @@ func main() {
 			log.Fatal(err)
 		}
 
+		cancelCleanCtx()
 		cancelServeCtx()
 	}()
 

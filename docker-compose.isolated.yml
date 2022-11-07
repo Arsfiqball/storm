@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   app:
     build:
@@ -10,7 +9,8 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - postgresql
+      postgresql:
+        condition: service_healthy
     environment:
       # Use test enviroment
       APP_ADDRESS: ":3000"
@@ -33,6 +33,11 @@ services:
     ports:
       - "5432:5432"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d app -U admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   migrate:
     image: migrate/migrate
     volumes:
@@ -44,7 +49,8 @@ services:
       - "postgres://admin:admin@postgresql:5432/app?sslmode=disable"
       - "up"
     depends_on:
-      - postgresql
+      postgresql:
+        condition: service_healthy
 
 volumes:
   postgresql_data:
