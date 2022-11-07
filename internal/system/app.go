@@ -27,9 +27,12 @@ func NewApp(fiberApp *fiber.App, viperConfig *viper.Viper) *App {
 	}
 }
 
-// Start serving app in HTTP
 func (a *App) Serve(ctx context.Context) error {
 	return a.fiberApp.Listen(a.viperConfig.GetString("address"))
+}
+
+func (a *App) GetFiber() *fiber.App {
+	return a.fiberApp
 }
 
 func (a *App) Clean(ctx context.Context) error {
