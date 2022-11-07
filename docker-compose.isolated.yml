@@ -44,7 +44,7 @@ services:
       - ./database/:/database
     command:
       - "-path"
-      - "/database/migrations"
+      - "/database/postgresql/migrations"
       - "-database"
       - "postgres://admin:admin@postgresql:5432/app?sslmode=disable"
       - "up"
