@@ -14,7 +14,7 @@ services:
     environment:
       # Use test enviroment
       APP_ADDRESS: ":3000"
-      GORM_DSN: "host=postgresql user=admin password=admin dbname=app port=5432"
+      APP_DSN: "host=postgresql user=admin password=admin dbname=app port=5432"
     healthcheck:
       test: ["CMD-SHELL", "cat", "/tmp/app_server_live"]
       interval: 5s

@@ -7,23 +7,27 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/wire"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 )
 
 var RegisterSet = wire.NewSet(
 	NewApp,
 	provider.ProvideFiber,
+	provider.ProvideGorm,
 	provider.ProvideViper,
 )
 
 type App struct {
 	fiberApp    *fiber.App
+	gormDb      *gorm.DB
 	viperConfig *viper.Viper
 }
 
-func NewApp(fiberApp *fiber.App, viperConfig *viper.Viper) *App {
+func NewApp(fiberApp *fiber.App, gormDb *gorm.DB, viperConfig *viper.Viper) *App {
 	return &App{
 		fiberApp:    fiberApp,
 		viperConfig: viperConfig,
+		gormDb:      gormDb,
 	}
 }
 
@@ -36,5 +40,12 @@ func (a *App) GetFiber() *fiber.App {
 }
 
 func (a *App) Clean(ctx context.Context) error {
-	return a.fiberApp.Shutdown()
+	a.fiberApp.Shutdown()
+
+	sqlDB, err := a.gormDb.DB()
+	if err != nil {
+		return err
+	}
+
+	return sqlDB.Close()
 }

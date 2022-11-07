@@ -5,6 +5,7 @@ import (
 	"context"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/steinfletcher/apitest"
 	"github.com/stretchr/testify/suite"
@@ -13,6 +14,7 @@ import (
 type HealthTestSuite struct {
 	suite.Suite
 	app     *system.App
+	appCtx  context.Context
 	handler http.HandlerFunc
 }
 
@@ -24,7 +26,18 @@ func (s *HealthTestSuite) SetupTest() {
 	}
 
 	s.app = app
+	s.appCtx = ctx
 	s.handler = FiberToHandlerFunc(s.app.GetFiber())
+}
+
+func (s *HealthTestSuite) TearDownTest() {
+	ctx, cancel := context.WithTimeout(s.appCtx, 30*time.Second)
+	defer cancel()
+
+	err := s.app.Clean(ctx)
+	if err != nil {
+		s.Fail("Failed to stop server")
+	}
 }
 
 func (s *HealthTestSuite) TestReadiness() {

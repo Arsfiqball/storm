@@ -16,6 +16,10 @@ import (
 func New(ctx context.Context) (*App, error) {
 	app := provider.ProvideFiber()
 	viper := provider.ProvideViper()
-	systemApp := NewApp(app, viper)
+	db, err := provider.ProvideGorm(viper)
+	if err != nil {
+		return nil, err
+	}
+	systemApp := NewApp(app, db, viper)
 	return systemApp, nil
 }
