@@ -2,24 +2,37 @@ package book
 
 import (
 	"app/pkg/restpl"
+	"app/pkg/restql"
 	"database/sql"
 	"time"
 )
 
 type QueryBook struct {
-	//
+	ID          restql.MultiInt
+	Title       restql.MultiString
+	Author      restql.MultiString
+	Series      restql.MultiString
+	Volume      restql.MultiInt
+	PublishDate restql.MultiTime
 }
 
-func (q *QueryBook) GetSqlWhereStatement() string {
-	return ""
+func (q *QueryBook) GetSqlWhereStatement() (string, map[string]interface{}) {
+	expression := restql.CombineSqlExpression(
+		restql.ConditionToSqlExpression("ID", q.ID.Condition),
+		restql.ConditionToSqlExpression("Title", q.Title.Condition),
+		restql.ConditionToSqlExpression("Author", q.Author.Condition),
+		restql.ConditionToSqlExpression("Series", q.Series.Condition),
+		restql.ConditionToSqlExpression("Volume", q.Volume.Condition),
+		restql.ConditionToSqlExpression("PublishDate", q.PublishDate.Condition),
+	)
+
+	return expression.Statement, expression.Values
 }
 
 func (q *QueryBook) GetSqlWhereValues() []interface{} {
 	var values []interface{}
 	return values
 }
-
-type Mutation []string
 
 type PayloadBook struct {
 	restpl.Mutation

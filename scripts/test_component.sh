@@ -10,7 +10,7 @@ sleep 10
 
 # Run all component test
 echo "================ TEST START ================="
-docker-compose -f docker-compose.isolated.yml run --rm app go test ./test/component/... -v
+docker-compose -f docker-compose.isolated.yml run --rm app go test ./test/component/... -v -p 1
 echo "================= TEST END =================="
 echo "Let me take a break for 2 seconds..."
 sleep 2

@@ -3,6 +3,7 @@ package integration
 import (
 	"app/pkg/book"
 	"app/pkg/restpl"
+	"app/pkg/restql"
 	"app/test/testhelper"
 	"context"
 	"database/sql"
@@ -107,7 +108,7 @@ func (s *BookTestSuite) TestCreateOne() {
 			}
 
 			// DEBUG by adding verbose flag (-v)
-			testhelper.JsonPrint(result)
+			// testhelper.JsonPrint(result)
 
 			assert.Equal(s.T(), scenario.checkEntity.Title, result.Title)
 			assert.Equal(s.T(), scenario.checkEntity.Author, result.Author)
@@ -115,6 +116,89 @@ func (s *BookTestSuite) TestCreateOne() {
 			assert.Equal(s.T(), scenario.checkEntity.Volume, result.Volume)
 			assert.Equal(s.T(), scenario.checkEntity.FileUrl, result.FileUrl)
 			assert.Equal(s.T(), scenario.checkEntity.CoverUrl, result.CoverUrl)
+			// assert.True(s.T(), scenario.checkEntity.PublishDate.Time.Equal(result.PublishDate.Time), "PublishDate is not equal")
+		})
+	}
+}
+
+func SimpleMultiInt(key string, op string, vals int) restql.MultiInt {
+	cond := map[string][]interface{}{}
+	cond[op] = []interface{}{vals}
+
+	return restql.MultiInt{
+		Key:       key,
+		Condition: cond,
+	}
+}
+
+func SimpleMultiString(key string, op string, vals string) restql.MultiString {
+	cond := map[string][]interface{}{}
+	cond[op] = []interface{}{vals}
+
+	return restql.MultiString{
+		Key:       key,
+		Condition: cond,
+	}
+}
+
+func (s *BookTestSuite) TestGetOne() {
+	s.ExecSQLTestFile(s.T(), "book/book_samples.sql")
+
+	type scenarioTemplate struct {
+		name        string
+		query       book.QueryBook
+		checkEntity book.EntityBook
+	}
+
+	scenarios := []scenarioTemplate{
+		{
+			name: "Get a book by id",
+			query: book.QueryBook{
+				ID: SimpleMultiInt("ID", "eq", 3),
+			},
+			checkEntity: book.EntityBook{},
+		},
+		{
+			name: "Get a book by author name contain sub-string (case sensitive)",
+			query: book.QueryBook{
+				Author: SimpleMultiString("Author", "contains", "Shield"),
+			},
+			checkEntity: book.EntityBook{},
+		},
+		{
+			name: "Get a book from a series (case insensitive) with specific volume",
+			query: book.QueryBook{
+				Series: SimpleMultiString("Series", "contain", "kane"),
+				Volume: SimpleMultiInt("Volume", "eq", 3),
+			},
+			checkEntity: book.EntityBook{},
+		},
+	}
+
+	for _, scenario := range scenarios {
+		s.Run(scenario.name, func() {
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+
+			result, err := s.AppSuite.
+				GetApp().
+				BookSet.
+				BookRepository.
+				GetOne(ctx, scenario.query)
+
+			if err != nil {
+				s.Fail(err.Error())
+			}
+
+			// DEBUG by adding verbose flag (-v)
+			testhelper.JsonPrint(result)
+
+			// assert.Equal(s.T(), scenario.checkEntity.Title, result.Title)
+			// assert.Equal(s.T(), scenario.checkEntity.Author, result.Author)
+			// assert.Equal(s.T(), scenario.checkEntity.Series, result.Series)
+			// assert.Equal(s.T(), scenario.checkEntity.Volume, result.Volume)
+			// assert.Equal(s.T(), scenario.checkEntity.FileUrl, result.FileUrl)
+			// assert.Equal(s.T(), scenario.checkEntity.CoverUrl, result.CoverUrl)
 			// assert.True(s.T(), scenario.checkEntity.PublishDate.Time.Equal(result.PublishDate.Time), "PublishDate is not equal")
 		})
 	}

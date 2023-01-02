@@ -36,3 +36,22 @@ func (r *BookRepository) CreateOne(ctx context.Context, payload PayloadBook) (En
 
 	return entity, nil
 }
+
+func (r *BookRepository) GetOne(ctx context.Context, query QueryBook) (EntityBook, error) {
+	var entity EntityBook
+
+	statement, values := query.GetSqlWhereStatement()
+	tx := r.db.WithContext(ctx)
+
+	if len(values) > 0 {
+		tx = tx.Where(statement, values)
+	}
+
+	result := tx.First(&entity)
+
+	if result.Error != nil {
+		return EntityBook{}, fmt.Errorf("failed to get one: %w", result.Error)
+	}
+
+	return entity, nil
+}
