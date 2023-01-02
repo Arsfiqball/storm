@@ -2,7 +2,6 @@ package book
 
 import (
 	"app/pkg/stdapi"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -22,8 +21,11 @@ func (handler *BookHandler) CreateOne(c *fiber.Ctx) error {
 
 	payload := new(PayloadBook)
 	if err := c.BodyParser(payload); err != nil {
+		res := stdapi.NewResponse(fiber.StatusBadRequest, err.Error(), nil)
+		return c.Status(fiber.StatusBadRequest).JSON(res.ToFiberMap())
+	}
 
-		fmt.Println(payload)
+	if err := payload.ReadJSON(c.Body()); err != nil {
 		res := stdapi.NewResponse(fiber.StatusBadRequest, err.Error(), nil)
 		return c.Status(fiber.StatusBadRequest).JSON(res.ToFiberMap())
 	}
