@@ -1,6 +1,8 @@
 package provider
 
-import "github.com/spf13/viper"
+import (
+	"github.com/spf13/viper"
+)
 
 func ProvideViper() *viper.Viper {
 	config := viper.New()

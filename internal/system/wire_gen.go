@@ -8,6 +8,7 @@ package system
 
 import (
 	"app/internal/provider"
+	"app/pkg/book"
 	"context"
 )
 
@@ -20,6 +21,15 @@ func New(ctx context.Context) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	systemApp := NewApp(app, db, viper)
+	bookRepository := book.NewBookRepository(db)
+	bookSet := &provider.BookSet{
+		BookRepository: bookRepository,
+	}
+	systemApp := &App{
+		FiberApp:    app,
+		GormDb:      db,
+		ViperConfig: viper,
+		BookSet:     bookSet,
+	}
 	return systemApp, nil
 }

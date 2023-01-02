@@ -5,44 +5,25 @@ import (
 	"context"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/wire"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
 
-var RegisterSet = wire.NewSet(
-	NewApp,
-	provider.ProvideFiber,
-	provider.ProvideGorm,
-	provider.ProvideViper,
-)
-
 type App struct {
-	fiberApp    *fiber.App
-	gormDb      *gorm.DB
-	viperConfig *viper.Viper
-}
-
-func NewApp(fiberApp *fiber.App, gormDb *gorm.DB, viperConfig *viper.Viper) *App {
-	return &App{
-		fiberApp:    fiberApp,
-		viperConfig: viperConfig,
-		gormDb:      gormDb,
-	}
+	FiberApp    *fiber.App
+	GormDb      *gorm.DB
+	ViperConfig *viper.Viper
+	BookSet     *provider.BookSet
 }
 
 func (a *App) Serve(ctx context.Context) error {
-	return a.fiberApp.Listen(a.viperConfig.GetString("address"))
-}
-
-func (a *App) GetFiber() *fiber.App {
-	return a.fiberApp
+	return a.FiberApp.Listen(a.ViperConfig.GetString("address"))
 }
 
 func (a *App) Clean(ctx context.Context) error {
-	a.fiberApp.Shutdown()
+	a.FiberApp.Shutdown()
 
-	sqlDB, err := a.gormDb.DB()
+	sqlDB, err := a.GormDb.DB()
 	if err != nil {
 		return err
 	}
