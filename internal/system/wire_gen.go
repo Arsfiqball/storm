@@ -15,15 +15,22 @@ import (
 // Injectors from wire.go:
 
 func New(ctx context.Context) (*App, error) {
-	app := provider.ProvideFiber()
 	viper := provider.ProvideViper()
 	db, err := provider.ProvideGorm(viper)
 	if err != nil {
 		return nil, err
 	}
 	bookRepository := book.NewBookRepository(db)
+	bookService := book.NewBookService(bookRepository)
+	bookHandler := book.NewBookHandler(bookService)
+	fiberHandlerSet := &provider.FiberHandlerSet{
+		BookHandler: bookHandler,
+	}
+	app := provider.NewFiber(fiberHandlerSet)
 	bookSet := &provider.BookSet{
 		BookRepository: bookRepository,
+		BookService:    bookService,
+		BookHandler:    bookHandler,
 	}
 	systemApp := &App{
 		FiberApp:    app,

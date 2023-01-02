@@ -27,7 +27,7 @@ func (s *BookTestSuite) TearDownTest() {
 	s.Stop(s.T())
 }
 
-func (s *BookTestSuite) TestReadiness() {
+func (s *BookTestSuite) TestCreateOne() {
 	type scenarioTemplate struct {
 		name        string
 		payload     map[string]interface{}
@@ -37,8 +37,16 @@ func (s *BookTestSuite) TestReadiness() {
 
 	scenarios := []scenarioTemplate{
 		{
-			name:        "Insert a book",
-			payload:     map[string]interface{}{},
+			name: "Insert a book",
+			payload: map[string]interface{}{
+				"title":       "Clean Architecture",
+				"author":      "Uncle Bob",
+				"series":      "Programming",
+				"volume":      3,
+				"fileUrl":     "https://book.com/clean.pdf",
+				"coverUrl":    "https://book.com/cover_clean.jpg",
+				"publishDate": "2023-01-01T23:11:57+07:00",
+			},
 			checkStatus: 200,
 			checkJson: jsonpath.Chain().
 				End(),
@@ -54,10 +62,13 @@ func (s *BookTestSuite) TestReadiness() {
 				s.Fail(err.Error())
 			}
 
+			bodyString := string(bodyBytes)
+
 			apitest.New().
 				HandlerFunc(s.handler).
-				Post("/book/one").
-				Body(string(bodyBytes)).
+				Post("/v1/book/one").
+				Header("Content-Type", "application/json").
+				Body(bodyString).
 				Expect(s.T()).
 				Status(scenario.checkStatus).
 				Assert(scenario.checkJson).

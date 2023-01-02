@@ -21,11 +21,15 @@ func (r *BookRepository) CreateOne(ctx context.Context, payload PayloadBook) (En
 	entity := payload.ToEntity()
 	selects := payload.GetSqlSelectFields()
 
-	result := r.db.WithContext(ctx).
-		Model(&entity).
-		Select(selects[0], selects...).
-		Create(&entity)
+	tx := r.db.WithContext(ctx).Model(&entity)
 
+	if len(selects) == 1 {
+		tx = tx.Select(selects[0])
+	} else if len(selects) > 1 {
+		tx = tx.Select(selects[0], selects...)
+	}
+
+	result := tx.Create(&entity)
 	if result.Error != nil {
 		return EntityBook{}, fmt.Errorf("failed to insert: %w", result.Error)
 	}
