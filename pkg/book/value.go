@@ -8,22 +8,22 @@ import (
 )
 
 type QueryBook struct {
-	ID          restql.MultiInt
-	Title       restql.MultiString
-	Author      restql.MultiString
-	Series      restql.MultiString
-	Volume      restql.MultiInt
-	PublishDate restql.MultiTime
+	ID          restql.MultiInt    `restql:"id"`
+	Title       restql.MultiString `restql:"title"`
+	Author      restql.MultiString `restql:"author"`
+	Series      restql.MultiString `restql:"series"`
+	Volume      restql.MultiInt    `restql:"volume"`
+	PublishDate restql.MultiTime   `restql:"publish_date"`
 }
 
 func (q *QueryBook) GetSqlWhereStatement() (string, map[string]interface{}) {
 	expression := restql.CombineSqlExpression(
-		restql.ConditionToSqlExpression("ID", q.ID.Condition),
-		restql.ConditionToSqlExpression("Title", q.Title.Condition),
-		restql.ConditionToSqlExpression("Author", q.Author.Condition),
-		restql.ConditionToSqlExpression("Series", q.Series.Condition),
-		restql.ConditionToSqlExpression("Volume", q.Volume.Condition),
-		restql.ConditionToSqlExpression("PublishDate", q.PublishDate.Condition),
+		restql.ConditionToSqlExpression("id", q.ID.Condition),
+		restql.ConditionToSqlExpression("title", q.Title.Condition),
+		restql.ConditionToSqlExpression("author", q.Author.Condition),
+		restql.ConditionToSqlExpression("series", q.Series.Condition),
+		restql.ConditionToSqlExpression("volume", q.Volume.Condition),
+		restql.ConditionToSqlExpression("publish_date", q.PublishDate.Condition),
 	)
 
 	return expression.Statement, expression.Values

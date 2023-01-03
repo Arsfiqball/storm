@@ -39,10 +39,9 @@ func (r *BookRepository) CreateOne(ctx context.Context, payload PayloadBook) (En
 
 func (r *BookRepository) GetOne(ctx context.Context, query QueryBook) (EntityBook, error) {
 	var entity EntityBook
-
-	statement, values := query.GetSqlWhereStatement()
 	tx := r.db.WithContext(ctx)
 
+	statement, values := query.GetSqlWhereStatement()
 	if len(values) > 0 {
 		tx = tx.Where(statement, values)
 	}

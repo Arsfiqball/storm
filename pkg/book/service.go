@@ -15,3 +15,7 @@ func NewBookService(repo *BookRepository) *BookService {
 func (svc *BookService) CreateOne(ctx context.Context, payload PayloadBook) (EntityBook, error) {
 	return svc.repo.CreateOne(ctx, payload)
 }
+
+func (svc *BookService) GetOne(ctx context.Context, query QueryBook) (EntityBook, error) {
+	return svc.repo.GetOne(ctx, query)
+}

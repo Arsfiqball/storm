@@ -76,6 +76,49 @@ func (s *BookTestSuite) TestCreateOne() {
 				JSON(&body)
 
 			// DEBUG by adding verbose flag (-v)
+			// testhelper.JsonPrint(body)
+		})
+	}
+}
+
+func (s *BookTestSuite) TestGetOne() {
+	s.ExecSQLTestFile(s.T(), "book/book_samples.sql")
+
+	type scenarioTemplate struct {
+		name        string
+		query       map[string][]string
+		checkStatus int
+		checkJson   func(*http.Response, *http.Request) error
+	}
+
+	scenarios := []scenarioTemplate{
+		{
+			name: "Get a book",
+			query: map[string][]string{
+				"id_eq": {"3"},
+			},
+			checkStatus: 200,
+			checkJson: jsonpath.Chain().
+				End(),
+		},
+	}
+
+	for _, scenario := range scenarios {
+		s.Run(scenario.name, func() {
+			var body interface{}
+
+			apitest.New().
+				HandlerFunc(s.handler).
+				Get("/v1/book/one").
+				Header("Content-Type", "application/json").
+				QueryCollection(scenario.query).
+				Expect(s.T()).
+				Status(scenario.checkStatus).
+				Assert(scenario.checkJson).
+				End().
+				JSON(&body)
+
+			// DEBUG by adding verbose flag (-v)
 			testhelper.JsonPrint(body)
 		})
 	}

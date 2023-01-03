@@ -82,11 +82,11 @@ func ConditionToSqlExpression(key string, conds map[string][]interface{}) SqlExp
 		}
 	}
 
-	if val, ok := conds["in"]; ok {
+	if val, ok := conds["in"]; ok && len(conds["in"]) > 0 {
 		addValue("IN", val)
 	}
 
-	if val, ok := conds["nin"]; ok {
+	if val, ok := conds["nin"]; ok && len(conds["nin"]) > 0 {
 		addValue("NOT IN", val)
 	}
 
