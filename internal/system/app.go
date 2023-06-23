@@ -1,7 +1,6 @@
 package system
 
 import (
-	"app/internal/provider"
 	"context"
 
 	"github.com/gofiber/fiber/v2"
@@ -13,7 +12,6 @@ type App struct {
 	FiberApp    *fiber.App
 	GormDb      *gorm.DB
 	ViperConfig *viper.Viper
-	BookSet     *provider.BookSet
 }
 
 func (a *App) Serve(ctx context.Context) error {

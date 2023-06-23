@@ -9,7 +9,8 @@ import (
 var RegisterSet = wire.NewSet(
 	provider.ProvideFiber,
 	provider.ProvideGorm,
+	provider.ProvideMongo,
 	provider.ProvideViper,
-	provider.ProvideBook,
+	provider.ProvideExample,
 	wire.Struct(new(App), "*"),
 )

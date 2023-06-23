@@ -8,7 +8,6 @@ package system
 
 import (
 	"app/internal/provider"
-	"app/pkg/book"
 	"context"
 )
 
@@ -20,23 +19,22 @@ func New(ctx context.Context) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	bookRepository := book.NewBookRepository(db)
-	bookService := book.NewBookService(bookRepository)
-	bookHandler := book.NewBookHandler(bookService)
-	fiberHandlerSet := &provider.FiberHandlerSet{
-		BookHandler: bookHandler,
+	client, err := provider.ProvideMongo(ctx, viper)
+	if err != nil {
+		return nil, err
 	}
-	app := provider.NewFiber(fiberHandlerSet)
-	bookSet := &provider.BookSet{
-		BookRepository: bookRepository,
-		BookService:    bookService,
-		BookHandler:    bookHandler,
+	example, err := provider.ProvideExample(ctx, db, client)
+	if err != nil {
+		return nil, err
 	}
+	fiberFeatureSet := &provider.FiberFeatureSet{
+		Example: example,
+	}
+	app := provider.NewFiber(fiberFeatureSet)
 	systemApp := &App{
 		FiberApp:    app,
 		GormDb:      db,
 		ViperConfig: viper,
-		BookSet:     bookSet,
 	}
 	return systemApp, nil
 }
