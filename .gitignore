@@ -1,2 +1,6 @@
 tmp/
 .env
+
+# Go workspace
+go.work
+go.work.sum

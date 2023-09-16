@@ -13,11 +13,6 @@ import (
 // Injectors from wire.go:
 
 func New(ctx context.Context, cfg Config) (*Example, error) {
-	db := cfg.GormDB
-	client := cfg.MongoClient
-	example := &Example{
-		gormDB:      db,
-		mongoClient: client,
-	}
+	example := &Example{}
 	return example, nil
 }

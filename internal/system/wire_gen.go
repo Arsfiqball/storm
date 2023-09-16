@@ -14,27 +14,22 @@ import (
 // Injectors from wire.go:
 
 func New(ctx context.Context) (*App, error) {
-	viper := provider.ProvideViper()
-	db, err := provider.ProvideGorm(viper)
+	example, err := provider.ProvideExample(ctx)
 	if err != nil {
 		return nil, err
 	}
-	client, err := provider.ProvideMongo(ctx, viper)
-	if err != nil {
-		return nil, err
-	}
-	example, err := provider.ProvideExample(ctx, db, client)
-	if err != nil {
-		return nil, err
-	}
-	fiberFeatureSet := &provider.FiberFeatureSet{
+	fiberDeps := &provider.FiberDeps{
 		Example: example,
 	}
-	app := provider.NewFiber(fiberFeatureSet)
-	systemApp := &App{
-		FiberApp:    app,
-		GormDb:      db,
-		ViperConfig: viper,
+	fiber := provider.NewFiber(fiberDeps)
+	viper := provider.ProvideViper()
+	gorm, err := provider.ProvideGorm(viper)
+	if err != nil {
+		return nil, err
 	}
-	return systemApp, nil
+	app := &App{
+		fiber: fiber,
+		gorm:  gorm,
+	}
+	return app, nil
 }
