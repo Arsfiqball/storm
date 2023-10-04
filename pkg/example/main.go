@@ -7,10 +7,20 @@ import (
 
 type Config struct{}
 
-type Example struct{}
+type Example struct {
+	handler *Handler
+}
 
 func (e *Example) FiberRoute(router fiber.Router) {
+	router.Get("/", e.handler.GetOneUser)
+}
+
+type Handler struct {
 	//
+}
+
+func (h *Handler) GetOneUser(c *fiber.Ctx) error {
+	return nil
 }
 
 var RegisterSet = wire.NewSet(

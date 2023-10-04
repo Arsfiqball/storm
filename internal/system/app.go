@@ -47,6 +47,7 @@ func (a *App) Liveness(ctx context.Context) error {
 func (a *App) Readiness(ctx context.Context) error {
 	exec := excode.Parallel(
 		a.fiber.Readiness,
+		a.gorm.Readiness,
 	)
 
 	return exec(ctx)
