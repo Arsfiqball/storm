@@ -22,14 +22,8 @@ func New(ctx context.Context) (*App, error) {
 		Example: example,
 	}
 	fiber := provider.NewFiber(fiberDeps)
-	viper := provider.ProvideViper()
-	gorm, err := provider.ProvideGorm(viper)
-	if err != nil {
-		return nil, err
-	}
 	app := &App{
 		fiber: fiber,
-		gorm:  gorm,
 	}
 	return app, nil
 }

@@ -5,7 +5,9 @@ import (
 	"github.com/google/wire"
 )
 
-type Config struct{}
+type Config struct {
+	//
+}
 
 type Example struct {
 	handler *Handler
@@ -19,11 +21,16 @@ type Handler struct {
 	//
 }
 
+func NewHandler() *Handler {
+	return &Handler{}
+}
+
 func (h *Handler) GetOneUser(c *fiber.Ctx) error {
-	return nil
+	return c.SendString("Hello, World 👋!")
 }
 
 var RegisterSet = wire.NewSet(
+	NewHandler,
 	wire.Struct(new(Example), "*"),
 	// wire.FieldsOf(new(Config)),
 )

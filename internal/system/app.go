@@ -4,26 +4,24 @@ import (
 	"app/internal/provider"
 	"context"
 
-	"github.com/Arsfiqball/talker/excode"
+	"github.com/Arsfiqball/talker/exco"
 	"github.com/google/wire"
 )
 
 var RegisterSet = wire.NewSet(
-	provider.ProvideViper,
+	provider.ProvideSlog,
 	provider.ProvideFiber,
-	provider.ProvideGorm,
 	provider.ProvideExample,
 	wire.Struct(new(App), "*"),
 )
 
 type App struct {
 	fiber *provider.Fiber
-	gorm  *provider.Gorm
 }
 
-func (a *App) Serve(ctx context.Context) error {
-	exec := excode.Sequential(
-		excode.Parallel(
+func (a *App) Start(ctx context.Context) error {
+	exec := exco.Sequential(
+		exco.Parallel(
 			a.fiber.Serve,
 		),
 	)
@@ -31,23 +29,21 @@ func (a *App) Serve(ctx context.Context) error {
 	return exec(ctx)
 }
 
-func (a *App) Clean(ctx context.Context) error {
-	exec := excode.Sequential(
+func (a *App) Stop(ctx context.Context) error {
+	exec := exco.Sequential(
 		a.fiber.Clean,
-		a.gorm.Clean,
 	)
 
 	return exec(ctx)
 }
 
-func (a *App) Liveness(ctx context.Context) error {
+func (a *App) Live(ctx context.Context) error {
 	return nil
 }
 
-func (a *App) Readiness(ctx context.Context) error {
-	exec := excode.Parallel(
+func (a *App) Ready(ctx context.Context) error {
+	exec := exco.Parallel(
 		a.fiber.Readiness,
-		a.gorm.Readiness,
 	)
 
 	return exec(ctx)

@@ -6,9 +6,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/Arsfiqball/talker/excode"
+	"github.com/Arsfiqball/talker/exco"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/google/wire"
 )
 
@@ -21,6 +20,10 @@ func fiberHandleError(ctx *fiber.Ctx, err error) error {
 	}
 
 	return ctx.Status(code).JSON(err)
+}
+
+func fiberRecoverMiddleware(c *fiber.Ctx) error {
+	return c.Next()
 }
 
 func fiberReadiness(c *fiber.Ctx) error {
@@ -38,7 +41,7 @@ type Fiber struct {
 func NewFiber(fs *FiberDeps) *Fiber {
 	app := fiber.New(fiber.Config{ErrorHandler: fiberHandleError})
 
-	app.Use(recover.New())
+	app.Use(fiberRecoverMiddleware)
 
 	app.Get("/readiness", fiberReadiness)
 
@@ -56,7 +59,7 @@ func (flc *Fiber) Clean(ctx context.Context) error {
 }
 
 func (flc *Fiber) Readiness(ctx context.Context) error {
-	return excode.HttpGetCheck("http://localhost:3000/readiness", 1*time.Second)(ctx)
+	return exco.HttpGetCheck("http://localhost:3000/readiness", 1*time.Second)(ctx)
 }
 
 var ProvideFiber = wire.NewSet(
