@@ -11,58 +11,62 @@ import (
 	"github.com/google/wire"
 )
 
-func fiberHandleError(ctx *fiber.Ctx, err error) error {
-	code := fiber.StatusInternalServerError
-
-	var e *fiber.Error
-	if errors.As(err, &e) {
-		code = e.Code
-	}
-
-	return ctx.Status(code).JSON(err)
+type Fiber interface {
+	Serve(ctx context.Context) error
+	Clean(ctx context.Context) error
+	Readiness(ctx context.Context) error
 }
 
-func fiberRecoverMiddleware(c *fiber.Ctx) error {
-	return c.Next()
-}
-
-func fiberReadiness(c *fiber.Ctx) error {
-	return c.SendStatus(200)
-}
-
-type FiberDeps struct {
-	Example *example.Example
-}
-
-type Fiber struct {
+type fiberState struct {
 	app *fiber.App
 }
 
-func NewFiber(fs *FiberDeps) *Fiber {
-	app := fiber.New(fiber.Config{ErrorHandler: fiberHandleError})
-
-	app.Use(fiberRecoverMiddleware)
-
-	app.Get("/readiness", fiberReadiness)
-
-	fs.Example.FiberRoute(app.Group("/example"))
-
-	return &Fiber{app: app}
+type FiberFeatureSet struct {
+	Example *example.Example
 }
 
-func (flc *Fiber) Serve(ctx context.Context) error {
-	return flc.app.Listen(":3000")
+func MakeFiber(fs FiberFeatureSet) (Fiber, error) {
+	handleError := func(ctx *fiber.Ctx, err error) error {
+		code := fiber.StatusInternalServerError
+
+		var e *fiber.Error
+		if errors.As(err, &e) {
+			code = e.Code
+		}
+
+		return ctx.Status(code).JSON(err)
+	}
+
+	handleReadiness := func(ctx *fiber.Ctx) error {
+		return ctx.SendStatus(200)
+	}
+
+	handleRecover := func(c *fiber.Ctx) error {
+		return c.Next()
+	}
+
+	app := fiber.New(fiber.Config{ErrorHandler: handleError})
+
+	app.Use(handleRecover)
+	app.Get("/readiness", handleReadiness)
+	app.Mount("/example", fs.Example.Fiber())
+
+	return &fiberState{app: app}, nil
 }
 
-func (flc *Fiber) Clean(ctx context.Context) error {
-	return flc.app.Shutdown()
+func (f *fiberState) Serve(ctx context.Context) error {
+	return f.app.Listen(":3000")
 }
 
-func (flc *Fiber) Readiness(ctx context.Context) error {
+func (f *fiberState) Clean(ctx context.Context) error {
+	return f.app.Shutdown()
+}
+
+func (f *fiberState) Readiness(ctx context.Context) error {
 	return exco.HttpGetCheck("http://localhost:3000/readiness", 1*time.Second)(ctx)
 }
 
 var ProvideFiber = wire.NewSet(
-	NewFiber,
-	wire.Struct(new(FiberDeps), "*"),
+	MakeFiber,
+	wire.Struct(new(FiberFeatureSet), "*"),
 )

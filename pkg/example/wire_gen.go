@@ -13,9 +13,6 @@ import (
 // Injectors from wire.go:
 
 func New(ctx context.Context, cfg Config) (*Example, error) {
-	handler := NewHandler()
-	example := &Example{
-		handler: handler,
-	}
+	example := &Example{}
 	return example, nil
 }

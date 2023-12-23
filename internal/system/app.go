@@ -16,7 +16,7 @@ var RegisterSet = wire.NewSet(
 )
 
 type App struct {
-	fiber *provider.Fiber
+	fiber provider.Fiber
 }
 
 func (a *App) Start(ctx context.Context) error {

@@ -9,28 +9,19 @@ type Config struct {
 	//
 }
 
-type Example struct {
-	handler *Handler
-}
+type Example struct{}
 
-func (e *Example) FiberRoute(router fiber.Router) {
-	router.Get("/", e.handler.GetOneUser)
-}
+func (e *Example) Fiber() *fiber.App {
+	app := fiber.New()
 
-type Handler struct {
-	//
-}
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, World 👋!")
+	})
 
-func NewHandler() *Handler {
-	return &Handler{}
-}
-
-func (h *Handler) GetOneUser(c *fiber.Ctx) error {
-	return c.SendString("Hello, World 👋!")
+	return app
 }
 
 var RegisterSet = wire.NewSet(
-	NewHandler,
 	wire.Struct(new(Example), "*"),
 	// wire.FieldsOf(new(Config)),
 )

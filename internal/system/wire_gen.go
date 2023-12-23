@@ -18,10 +18,13 @@ func New(ctx context.Context) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	fiberDeps := &provider.FiberDeps{
+	fiberFeatureSet := provider.FiberFeatureSet{
 		Example: example,
 	}
-	fiber := provider.NewFiber(fiberDeps)
+	fiber, err := provider.MakeFiber(fiberFeatureSet)
+	if err != nil {
+		return nil, err
+	}
 	app := &App{
 		fiber: fiber,
 	}
