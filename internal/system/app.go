@@ -9,6 +9,7 @@ import (
 )
 
 var RegisterSet = wire.NewSet(
+	provider.ProvideOTEL,
 	provider.ProvideSlog,
 	provider.ProvideFiber,
 	provider.ProvideGORM,
@@ -19,6 +20,7 @@ var RegisterSet = wire.NewSet(
 )
 
 type App struct {
+	OTEL      provider.OTEL
 	Fiber     provider.Fiber
 	GORM      provider.GORM
 	Watermill provider.Watermill

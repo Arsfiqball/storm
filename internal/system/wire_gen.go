@@ -14,6 +14,10 @@ import (
 // Injectors from wire.go:
 
 func New(ctx context.Context) (*App, error) {
+	otel, err := provider.ProvideOTEL()
+	if err != nil {
+		return nil, err
+	}
 	example, err := provider.ProvideExample(ctx)
 	if err != nil {
 		return nil, err
@@ -38,6 +42,7 @@ func New(ctx context.Context) (*App, error) {
 		return nil, err
 	}
 	app := &App{
+		OTEL:      otel,
 		Fiber:     fiber,
 		GORM:      gorm,
 		Watermill: watermill,
