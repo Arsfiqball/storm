@@ -5,7 +5,9 @@ go 1.21
 require (
 	github.com/Arsfiqball/talker v0.0.0-20231021135954-d55203262180
 	github.com/ThreeDotsLabs/watermill v1.3.5
+	github.com/gocraft/work v0.5.1
 	github.com/gofiber/fiber/v2 v2.50.0
+	github.com/gomodule/redigo v1.8.9
 	github.com/google/wire v0.5.0
 	gorm.io/driver/postgres v1.5.4
 	gorm.io/gorm v1.25.5
@@ -28,6 +30,7 @@ require (
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
+	github.com/robfig/cron v1.2.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.50.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect

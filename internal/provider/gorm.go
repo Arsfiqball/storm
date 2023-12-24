@@ -11,6 +11,7 @@ import (
 type GORM interface {
 	DB() *gorm.DB
 	Close(context.Context) error
+	Ping(context.Context) error
 }
 
 type gormState struct {
@@ -47,4 +48,13 @@ func (g *gormState) Close(ctx context.Context) error {
 	}
 
 	return sqlDB.Close()
+}
+
+func (g *gormState) Ping(ctx context.Context) error {
+	sqlDB, err := g.db.DB()
+	if err != nil {
+		return err
+	}
+
+	return sqlDB.PingContext(ctx)
 }

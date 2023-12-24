@@ -33,10 +33,15 @@ func New(ctx context.Context) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
+	work, err := provider.ProvideWork()
+	if err != nil {
+		return nil, err
+	}
 	app := &App{
 		Fiber:     fiber,
 		GORM:      gorm,
 		Watermill: watermill,
+		Work:      work,
 	}
 	return app, nil
 }
