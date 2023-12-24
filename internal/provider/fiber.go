@@ -12,6 +12,7 @@ import (
 )
 
 type Fiber interface {
+	App() *fiber.App
 	Serve(ctx context.Context) error
 	Clean(ctx context.Context) error
 	Readiness(ctx context.Context) error
@@ -52,6 +53,10 @@ func MakeFiber(fs FiberFeatureSet) (Fiber, error) {
 	app.Mount("/example", fs.Example.Fiber())
 
 	return &fiberState{app: app}, nil
+}
+
+func (f *fiberState) App() *fiber.App {
+	return f.app
 }
 
 func (f *fiberState) Serve(ctx context.Context) error {

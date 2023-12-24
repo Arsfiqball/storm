@@ -11,18 +11,23 @@ import (
 var RegisterSet = wire.NewSet(
 	provider.ProvideSlog,
 	provider.ProvideFiber,
+	provider.ProvideGORM,
+	provider.ProvideWatermill,
 	provider.ProvideExample,
 	wire.Struct(new(App), "*"),
 )
 
 type App struct {
-	fiber provider.Fiber
+	Fiber     provider.Fiber
+	GORM      provider.GORM
+	Watermill provider.Watermill
 }
 
 func (a *App) Start(ctx context.Context) error {
 	exec := exco.Sequential(
 		exco.Parallel(
-			a.fiber.Serve,
+			a.Fiber.Serve,
+			a.Watermill.Serve,
 		),
 	)
 
@@ -30,11 +35,13 @@ func (a *App) Start(ctx context.Context) error {
 }
 
 func (a *App) Stop(ctx context.Context) error {
-	exec := exco.Sequential(
-		a.fiber.Clean,
-	)
-
-	return exec(ctx)
+	return exco.Sequential(
+		exco.Parallel(
+			a.Fiber.Clean,
+			a.Watermill.Clean,
+		),
+		a.GORM.Close,
+	)(ctx)
 }
 
 func (a *App) Live(ctx context.Context) error {
@@ -43,7 +50,7 @@ func (a *App) Live(ctx context.Context) error {
 
 func (a *App) Ready(ctx context.Context) error {
 	exec := exco.Parallel(
-		a.fiber.Readiness,
+		a.Fiber.Readiness,
 	)
 
 	return exec(ctx)

@@ -25,8 +25,18 @@ func New(ctx context.Context) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
+	gorm, err := provider.ProvideGORM(ctx)
+	if err != nil {
+		return nil, err
+	}
+	watermill, err := provider.ProvideWatermill(ctx)
+	if err != nil {
+		return nil, err
+	}
 	app := &App{
-		fiber: fiber,
+		Fiber:     fiber,
+		GORM:      gorm,
+		Watermill: watermill,
 	}
 	return app, nil
 }
