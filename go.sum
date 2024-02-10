@@ -1,5 +1,5 @@
-github.com/Arsfiqball/talker v0.0.0-20231021135954-d55203262180 h1:mHwsZAad1r/v97roJA2Ic5Oi6e+DMt+TgVo/oSruGxQ=
-github.com/Arsfiqball/talker v0.0.0-20231021135954-d55203262180/go.mod h1:l/QZp4LXi6UCFSadQSfSNh1/AaTvAkyuSnRfZVB8yYg=
+github.com/Arsfiqball/csverse/talker v0.0.0-20240208030259-f362f6e85b7c h1:3frjVxbua4wxn5gqt/xErmb4ujXO8kR/C3ascFu7Uk8=
+github.com/Arsfiqball/csverse/talker v0.0.0-20240208030259-f362f6e85b7c/go.mod h1:4CJnoSvzOwZ09Pd9s+ujj9dOxQwcLr9jPCtojryeurQ=
 github.com/ThreeDotsLabs/watermill v1.3.5 h1:50JEPEhMGZQMh08ct0tfO1PsgMOAOhV3zxK2WofkbXg=
 github.com/ThreeDotsLabs/watermill v1.3.5/go.mod h1:O/u/Ptyrk5MPTxSeWM5vzTtZcZfxXfO9PK9eXTYiFZY=
 github.com/andybalholm/brotli v1.0.6 h1:Yf9fFpf49Zrxb9NlQaluyE92/+X7UVHlhMNJN2sxfOI=

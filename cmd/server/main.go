@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Arsfiqball/talker/exco"
+	"github.com/Arsfiqball/csverse/talker"
 )
 
 func main() {
@@ -19,7 +19,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	proc := exco.Process{
+	proc := talker.Process{
 		MonitorAddr: ":8086",
 		Start:       app.Start,
 		Live:        app.Live,
@@ -30,5 +30,5 @@ func main() {
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
 
-	exco.Serve(proc, sig)
+	talker.Serve(proc, sig)
 }

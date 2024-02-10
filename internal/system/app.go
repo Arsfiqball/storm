@@ -4,7 +4,7 @@ import (
 	"app/internal/provider"
 	"context"
 
-	"github.com/Arsfiqball/talker/exco"
+	"github.com/Arsfiqball/csverse/talker"
 	"github.com/google/wire"
 )
 
@@ -28,8 +28,8 @@ type App struct {
 }
 
 func (a *App) Start(ctx context.Context) error {
-	exec := exco.Sequential(
-		exco.Parallel(
+	exec := talker.Sequential(
+		talker.Parallel(
 			a.Fiber.Serve,
 			a.Watermill.Serve,
 			a.Work.Start,
@@ -40,8 +40,8 @@ func (a *App) Start(ctx context.Context) error {
 }
 
 func (a *App) Stop(ctx context.Context) error {
-	exec := exco.Sequential(
-		exco.Parallel(
+	exec := talker.Sequential(
+		talker.Parallel(
 			a.Fiber.Clean,
 			a.Watermill.Clean,
 			a.Work.Stop,
@@ -57,7 +57,7 @@ func (a *App) Live(ctx context.Context) error {
 }
 
 func (a *App) Ready(ctx context.Context) error {
-	exec := exco.Parallel(
+	exec := talker.Parallel(
 		a.Fiber.Readiness,
 		a.GORM.Ping,
 	)

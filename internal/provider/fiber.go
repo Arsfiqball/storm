@@ -4,9 +4,7 @@ import (
 	"app/pkg/example"
 	"context"
 	"errors"
-	"time"
 
-	"github.com/Arsfiqball/talker/exco"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/wire"
 )
@@ -68,7 +66,7 @@ func (f *fiberState) Clean(ctx context.Context) error {
 }
 
 func (f *fiberState) Readiness(ctx context.Context) error {
-	return exco.HttpGetCheck("http://localhost:3000/readiness", 1*time.Second)(ctx)
+	return nil
 }
 
 var ProvideFiber = wire.NewSet(

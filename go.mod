@@ -1,9 +1,9 @@
 module app
 
-go 1.21
+go 1.21.1
 
 require (
-	github.com/Arsfiqball/talker v0.0.0-20231021135954-d55203262180
+	github.com/Arsfiqball/csverse/talker v0.0.0-20240208030259-f362f6e85b7c
 	github.com/ThreeDotsLabs/watermill v1.3.5
 	github.com/gocraft/work v0.5.1
 	github.com/gofiber/fiber/v2 v2.50.0
