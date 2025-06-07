@@ -3,7 +3,7 @@ package system
 import (
 	"app/internal/provider"
 
-	"github.com/Arsfiqball/csverse/talker"
+	"github.com/Arsfiqball/codec/talker"
 	"github.com/google/wire"
 )
 

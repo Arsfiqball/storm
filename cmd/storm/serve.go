@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Arsfiqball/csverse/talker"
+	"github.com/Arsfiqball/codec/talker"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
