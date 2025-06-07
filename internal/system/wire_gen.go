@@ -25,7 +25,7 @@ func New(ctx context.Context) (*App, error) {
 	fiberFeatureSet := provider.FiberFeatureSet{
 		Example: example,
 	}
-	fiber, err := provider.MakeFiber(fiberFeatureSet)
+	fiber, err := provider.MakeFiber(fiberFeatureSet, otel)
 	if err != nil {
 		return nil, err
 	}

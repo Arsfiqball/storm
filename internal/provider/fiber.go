@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/gofiber/contrib/otelfiber/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/wire"
 	"github.com/spf13/viper"
@@ -26,7 +27,7 @@ type FiberFeatureSet struct {
 	Example *example.Example
 }
 
-func MakeFiber(fs FiberFeatureSet) (Fiber, error) {
+func MakeFiber(fs FiberFeatureSet, ot Otel) (Fiber, error) {
 	handleError := func(ctx *fiber.Ctx, err error) error {
 		code := fiber.StatusInternalServerError
 
@@ -47,6 +48,14 @@ func MakeFiber(fs FiberFeatureSet) (Fiber, error) {
 	}
 
 	app := fiber.New(fiber.Config{ErrorHandler: handleError})
+
+	// Add OpenTelemetry middleware
+	app.Use(otelfiber.Middleware(
+		otelfiber.WithTracerProvider(ot.Provider()),
+		otelfiber.WithNext(func(c *fiber.Ctx) bool {
+			return c.Path() == "/readiness" // Skip OpenTelemetry for readiness endpoint
+		}),
+	))
 
 	app.Use(handleRecover)
 	app.Get("/readiness", handleReadiness)

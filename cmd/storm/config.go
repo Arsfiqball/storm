@@ -22,6 +22,27 @@ output: "json"
 # Database settings
 database:
   url: "postgres://user:password@localhost:5432/app"
+
+# Redis settings
+redis:
+  url: "redis://localhost:6379/0"
+  consumer_group: "storm-consumer-group" 
+  consumer_prefix: "storm-consumer"
+  # Supported Redis stream settings
+  max_idle_time: "1m"
+  block_time: "5s"
+  claim_interval: "30s"
+  claim_batch_size: 100
+  check_consumers_interval: "5m"
+  consumer_timeout: "10m"
+  nack_resend_sleep: "2s"
+
+# OpenTelemetry configuration
+telemetry:
+  service_name: "storm-service"
+  zipkin_url: "" # Empty means use stdout exporter
+  sampling: "always" # Options: always, never, traceidratio, parentbased
+  sampling_ratio: 0.1 # Used when sampling is set to traceidratio
 `
 
 var configCmd = &cobra.Command{

@@ -7,7 +7,6 @@ import (
 	"github.com/google/wire"
 )
 
-//go:generate wire gen app/internal/system
 var RegisterSet = wire.NewSet(
 	provider.ProvideOtel,
 	provider.ProvideSlog,
