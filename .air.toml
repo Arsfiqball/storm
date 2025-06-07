@@ -3,11 +3,11 @@ testdata_dir = "testdata"
 tmp_dir = "tmp"
 
 [build]
-  args_bin = []
-  bin = "./tmp/server"
-  cmd = "go build -o ./tmp/server ./cmd/server/main.go"
+  args_bin = ["serve"]
+  bin = "./bin/storm"
+  cmd = "go build -o ./bin/storm ./cmd/storm"
   delay = 1000
-  exclude_dir = ["assets", "tmp", "vendor", "testdata"]
+  exclude_dir = ["assets", "tmp", "bin", "vendor", "testdata"]
   exclude_file = []
   exclude_regex = ["_test.go"]
   exclude_unchanged = false
@@ -18,7 +18,7 @@ tmp_dir = "tmp"
   log = "build-errors.log"
   stop_on_error = true
 
-  # Please keep these two config as it is, related bug: https://github.com/cosmtrek/air/issues/129
+  # Please keep these two config as it is, related bug: https://github.com/air-verse/air/issues/129
   kill_delay = "0s"
   send_interrupt = false
 

@@ -14,7 +14,7 @@ import (
 // Injectors from wire.go:
 
 func New(ctx context.Context) (*App, error) {
-	otel, err := provider.ProvideOTEL()
+	otel, err := provider.ProvideOtel()
 	if err != nil {
 		return nil, err
 	}
@@ -29,11 +29,12 @@ func New(ctx context.Context) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	gorm, err := provider.ProvideGORM(ctx)
+	gorm, err := provider.ProvideGorm(ctx)
 	if err != nil {
 		return nil, err
 	}
-	watermill, err := provider.ProvideWatermill(ctx)
+	slog := provider.ProvideSlog()
+	watermill, err := provider.ProvideWatermill(ctx, slog)
 	if err != nil {
 		return nil, err
 	}
@@ -42,11 +43,12 @@ func New(ctx context.Context) (*App, error) {
 		return nil, err
 	}
 	app := &App{
-		OTEL:      otel,
+		Otel:      otel,
 		Fiber:     fiber,
-		GORM:      gorm,
+		Gorm:      gorm,
 		Watermill: watermill,
 		Work:      work,
+		Slog:      slog,
 	}
 	return app, nil
 }

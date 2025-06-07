@@ -1,5 +1,12 @@
-tmp/
+# Configuration files
 .env
+.storm.yaml
+
+# Temporary files
+tmp/
+
+# Build output
+bin/
 
 # Go workspace
 go.work

@@ -2,13 +2,14 @@ package provider
 
 import (
 	"context"
-	"os"
+	"errors"
 
+	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-type GORM interface {
+type Gorm interface {
 	DB() *gorm.DB
 	Close(context.Context) error
 	Ping(context.Context) error
@@ -18,8 +19,11 @@ type gormState struct {
 	db *gorm.DB
 }
 
-func ProvideGORM(ctx context.Context) (GORM, error) {
-	dsn := os.Getenv("DATABASE_URL")
+func ProvideGorm(ctx context.Context) (Gorm, error) {
+	dsn := viper.GetString("database.url")
+	if dsn == "" {
+		return nil, errors.New("database URL is not set in configuration")
+	}
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {

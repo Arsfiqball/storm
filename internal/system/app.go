@@ -2,17 +2,17 @@ package system
 
 import (
 	"app/internal/provider"
-	"context"
 
 	"github.com/Arsfiqball/csverse/talker"
 	"github.com/google/wire"
 )
 
+//go:generate wire gen app/internal/system
 var RegisterSet = wire.NewSet(
-	provider.ProvideOTEL,
+	provider.ProvideOtel,
 	provider.ProvideSlog,
 	provider.ProvideFiber,
-	provider.ProvideGORM,
+	provider.ProvideGorm,
 	provider.ProvideWatermill,
 	provider.ProvideWork,
 	provider.ProvideExample,
@@ -20,47 +20,72 @@ var RegisterSet = wire.NewSet(
 )
 
 type App struct {
-	OTEL      provider.OTEL
+	Otel      provider.Otel
 	Fiber     provider.Fiber
-	GORM      provider.GORM
+	Gorm      provider.Gorm
 	Watermill provider.Watermill
 	Work      provider.Work
+	Slog      provider.Slog
 }
 
-func (a *App) Start(ctx context.Context) error {
-	exec := talker.Sequential(
-		talker.Parallel(
+func (a *App) Serve() talker.Process {
+	return talker.Process{
+		Start: talker.Parallel(
 			a.Fiber.Serve,
 			a.Watermill.Serve,
 			a.Work.Start,
 		),
-	)
-
-	return exec(ctx)
-}
-
-func (a *App) Stop(ctx context.Context) error {
-	exec := talker.Sequential(
-		talker.Parallel(
-			a.Fiber.Clean,
-			a.Watermill.Clean,
-			a.Work.Stop,
+		Ready: talker.Parallel(
+			a.Fiber.Readiness,
+			a.Gorm.Ping,
 		),
-		a.GORM.Close,
-	)
-
-	return exec(ctx)
+		Stop: talker.Sequential(
+			talker.Parallel(
+				a.Fiber.Clean,
+				a.Watermill.Clean,
+				a.Work.Stop,
+			),
+			a.Gorm.Close,
+		),
+		Logger: a.Slog.Logger(),
+	}
 }
 
-func (a *App) Live(ctx context.Context) error {
-	return nil
+func (a *App) ServeOnlyHTTP() talker.Process {
+	return talker.Process{
+		Start: a.Fiber.Serve,
+		Ready: talker.Parallel(
+			a.Fiber.Readiness,
+			a.Gorm.Ping,
+		),
+		Stop: talker.Sequential(
+			a.Fiber.Clean,
+			a.Gorm.Close,
+		),
+		Logger: a.Slog.Logger(),
+	}
 }
 
-func (a *App) Ready(ctx context.Context) error {
-	exec := talker.Parallel(
-		a.Fiber.Readiness,
-		a.GORM.Ping,
-	)
+func (a *App) ServeOnlyListener() talker.Process {
+	return talker.Process{
+		Start: a.Watermill.Serve,
+		Ready: a.Gorm.Ping,
+		Stop: talker.Sequential(
+			a.Watermill.Clean,
+			a.Gorm.Close,
+		),
+		Logger: a.Slog.Logger(),
+	}
+}
 
-	return exec(ctx)
+func (a *App) ServeOnlyWorker() talker.Process {
+	return talker.Process{
+		Start: a.Work.Start,
+		Ready: a.Gorm.Ping,
+		Stop: talker.Sequential(
+			a.Work.Stop,
+			a.Gorm.Close,
+		),
+		Logger: a.Slog.Logger(),
+	}
 }

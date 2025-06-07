@@ -1,1 +1,2 @@
-DROP TABLE IF EXISTS users;
+-- Rollback all initial migrations
+DROP TABLE IF EXISTS "user" CASCADE;

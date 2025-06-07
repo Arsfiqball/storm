@@ -7,6 +7,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/wire"
+	"github.com/spf13/viper"
 )
 
 type Fiber interface {
@@ -17,7 +18,8 @@ type Fiber interface {
 }
 
 type fiberState struct {
-	app *fiber.App
+	app  *fiber.App
+	addr string
 }
 
 type FiberFeatureSet struct {
@@ -50,7 +52,12 @@ func MakeFiber(fs FiberFeatureSet) (Fiber, error) {
 	app.Get("/readiness", handleReadiness)
 	app.Mount("/example", fs.Example.Fiber())
 
-	return &fiberState{app: app}, nil
+	addr := viper.GetString("serve.addr")
+	if addr == "" {
+		addr = ":3000"
+	}
+
+	return &fiberState{app: app, addr: addr}, nil
 }
 
 func (f *fiberState) App() *fiber.App {
@@ -58,7 +65,7 @@ func (f *fiberState) App() *fiber.App {
 }
 
 func (f *fiberState) Serve(ctx context.Context) error {
-	return f.app.Listen(":3000")
+	return f.app.Listen(f.addr)
 }
 
 func (f *fiberState) Clean(ctx context.Context) error {

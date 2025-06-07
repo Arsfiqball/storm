@@ -13,7 +13,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-type OTEL interface {
+type Otel interface {
 	Provider() *sdktrace.TracerProvider
 	Tracer() trace.Tracer
 }
@@ -23,7 +23,7 @@ type otelState struct {
 	tracer   trace.Tracer
 }
 
-func ProvideOTEL() (OTEL, error) {
+func ProvideOtel() (Otel, error) {
 	var (
 		sampler  sdktrace.Sampler
 		exporter sdktrace.SpanExporter
