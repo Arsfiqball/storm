@@ -13,6 +13,9 @@ import (
 // Injectors from wire.go:
 
 func New(ctx context.Context, cfg Config) (*Example, error) {
-	example := &Example{}
+	tracer := cfg.Tracer
+	example := &Example{
+		tracer: tracer,
+	}
 	return example, nil
 }

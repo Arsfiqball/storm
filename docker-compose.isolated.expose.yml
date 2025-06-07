@@ -8,3 +8,6 @@ services:
   redis:
     ports:
       - "6379:6379"
+  zipkin:
+    ports:
+      - "9411:9411"

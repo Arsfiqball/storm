@@ -18,14 +18,15 @@ func New(ctx context.Context) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	example, err := provider.ProvideExample(ctx)
+	example, err := provider.ProvideExample(ctx, otel)
 	if err != nil {
 		return nil, err
 	}
 	fiberFeatureSet := provider.FiberFeatureSet{
 		Example: example,
 	}
-	fiber, err := provider.MakeFiber(fiberFeatureSet, otel)
+	slog := provider.ProvideSlog()
+	fiber, err := provider.MakeFiber(fiberFeatureSet, otel, slog)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +34,6 @@ func New(ctx context.Context) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	slog := provider.ProvideSlog()
 	watermill, err := provider.ProvideWatermill(ctx, slog)
 	if err != nil {
 		return nil, err

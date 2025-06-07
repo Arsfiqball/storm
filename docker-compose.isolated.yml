@@ -11,12 +11,16 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      zipkin:
+        condition: service_healthy
     environment:
-      # Use test enviroment
+      # Use test environment
       STORM_SERVE_ADDR: ":3000"
       STORM_SERVE_MONITOR: ":8086"
       STORM_DATABASE_URL: "postgres://admin:admin@postgresql:5432/app?sslmode=disable"
       STORM_REDIS_URL: "redis://redis:6379/0"
+      STORM_TELEMETRY_ZIPKIN_URL: "http://zipkin:9411/api/v2/spans"
+      STORM_TELEMETRY_SERVICE_NAME: "storm-service"
     healthcheck:
       test: ["CMD-SHELL", "cat", "/tmp/app_server_live"]
       interval: 5s
@@ -44,6 +48,14 @@ services:
       - redis_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+  zipkin:
+    image: openzipkin/zipkin:latest
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:9411/health"]
       interval: 5s
       timeout: 3s
       retries: 5

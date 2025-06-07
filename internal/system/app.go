@@ -46,7 +46,6 @@ func (a *App) Serve() talker.Process {
 			),
 			a.Gorm.Close,
 		),
-		Logger: a.Slog.Logger(),
 	}
 }
 
@@ -61,7 +60,6 @@ func (a *App) ServeOnlyHTTP() talker.Process {
 			a.Fiber.Clean,
 			a.Gorm.Close,
 		),
-		Logger: a.Slog.Logger(),
 	}
 }
 
@@ -73,7 +71,6 @@ func (a *App) ServeOnlyListener() talker.Process {
 			a.Watermill.Clean,
 			a.Gorm.Close,
 		),
-		Logger: a.Slog.Logger(),
 	}
 }
 
@@ -85,6 +82,5 @@ func (a *App) ServeOnlyWorker() talker.Process {
 			a.Work.Stop,
 			a.Gorm.Close,
 		),
-		Logger: a.Slog.Logger(),
 	}
 }

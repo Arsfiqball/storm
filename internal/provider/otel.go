@@ -1,7 +1,6 @@
 package provider
 
 import (
-	"os"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -41,11 +40,6 @@ func ProvideOtel() (Otel, error) {
 
 	samplingStrategy := viper.GetString("telemetry.sampling")
 	zipkinURL := viper.GetString("telemetry.zipkin_url")
-
-	// If environment variable is set, it overrides config file
-	if envZipkin := os.Getenv("ZIPKIN_URL"); envZipkin != "" {
-		zipkinURL = envZipkin
-	}
 
 	// Configure sampler based on configuration
 	switch strings.ToLower(samplingStrategy) {

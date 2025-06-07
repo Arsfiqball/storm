@@ -3,7 +3,7 @@ module app
 go 1.24.2
 
 require (
-	github.com/Arsfiqball/codec v0.0.0-20250607095737-d77e7b6f850e
+	github.com/Arsfiqball/codec v0.0.0-20250607120337-adc3d652e4d1
 	github.com/ThreeDotsLabs/watermill v1.4.6
 	github.com/ThreeDotsLabs/watermill-redisstream v1.4.3
 	github.com/gocraft/work v0.5.1
