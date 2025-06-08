@@ -17,6 +17,8 @@ var isolateCmd = &cobra.Command{
 
 // Add expose flag variable
 var exposePortsFlag bool
+// Add web flag variable
+var webFlag bool
 
 var isolateUpCmd = &cobra.Command{
 	Use:   "up",
@@ -32,6 +34,12 @@ var isolateUpCmd = &cobra.Command{
 		if exposePortsFlag {
 			dockerArgs = append(dockerArgs, "-f", "docker-compose.isolated.expose.yml")
 			fmt.Println("Ports will be exposed to the host machine")
+		}
+
+		// If web flag is set, include the web yml file
+		if webFlag {
+			dockerArgs = append(dockerArgs, "-f", "docker-compose.isolated.web.yml")
+			fmt.Println("Web service will be included in the environment")
 		}
 
 		// Add the remaining arguments
@@ -57,7 +65,17 @@ var isolateDownCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Stopping isolated environment...")
 
-		dockerCmd := exec.Command("docker", "compose", "-f", "docker-compose.isolated.yml", "down", "--volumes")
+		// Build the docker compose command with both standard and web config files
+		// to ensure any web services are always shut down properly
+		dockerArgs := []string{
+			"compose",
+			"-f", "docker-compose.isolated.yml",
+			"-f", "docker-compose.isolated.web.yml",
+			"down",
+			"--volumes",
+		}
+
+		dockerCmd := exec.Command("docker", dockerArgs...)
 		dockerCmd.Stdout = os.Stdout
 		dockerCmd.Stderr = os.Stderr
 
@@ -215,6 +233,8 @@ var isolateTestCmd = &cobra.Command{
 func init() {
 	// Add expose flag to the up command
 	isolateUpCmd.Flags().BoolVarP(&exposePortsFlag, "expose", "e", false, "Expose database and app ports to the host machine")
+	// Add web flag to the up command
+	isolateUpCmd.Flags().BoolVarP(&webFlag, "web", "w", false, "Include web service in the isolated environment")
 
 	// Add project name flag only to the test command
 	isolateTestCmd.Flags().StringVarP(&testProjectNameFlag, "project-name", "p", "", "Specify the Docker Compose project name")

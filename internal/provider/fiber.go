@@ -147,8 +147,7 @@ func MakeFiber(fs FiberFeatureSet, ot Otel, lg Slog) (Fiber, error) {
 			}
 
 			// TODO: Add more context to the log if needed
-			lg.Logger().Info(c.Response().String(),
-				"info", "Request completed successfully",
+			lg.Logger().Info(fmt.Sprintf("Response completed with status %d", c.Response().StatusCode()),
 				"method", c.Method(),
 				"path", c.Path(),
 				"status", c.Response().StatusCode(),
@@ -175,7 +174,23 @@ func MakeFiber(fs FiberFeatureSet, ot Otel, lg Slog) (Fiber, error) {
 		return ctx.SendStatus(200)
 	})
 
-	app.Mount("/example", fs.Example.Fiber())
+	// Ensure that these groups are proxied in web/vite.config.ts.
+	// In "web" development, vite will proxy these requests to the backend.
+	// But only for specific paths.
+	// You need to visit the web host & port instead of the backend host & port.
+	// Typically, this is http://localhost:5173 (the web dev server)
+	// The api paths are prefixed with /api, so you can access them like this:
+	// http://localhost:5173/api/example
+	apiGroup := app.Group("/api")
+	apiGroup.Mount("/example", fs.Example.Fiber())
+
+	// Serve static files from the web/dist directory
+	// Build them using `npm run build` in the web directory.
+	// In production, this should be the built frontend assets
+	app.Static("/", "web/dist")
+	app.Get("*", func(c *fiber.Ctx) error {
+		return c.SendFile("./web/dist/index.html")
+	})
 
 	app.Use(func(c *fiber.Ctx) error {
 		// Handle 404 Not Found
