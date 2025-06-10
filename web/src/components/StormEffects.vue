@@ -1,85 +1,18 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-import HeroSection from '@/components/HeroSection.vue'
-import FeatureCard from '@/components/FeatureCard.vue'
-import CLITerminal from '@/components/CLITerminal.vue'
-import AppFooter from '@/components/AppFooter.vue'
-
-const features = ref([
-  {
-    icon: 'pi pi-bolt',
-    title: 'Lightning Fast',
-    description: 'Built on Go for high-performance backend operations with minimal resource usage',
-  },
-  {
-    icon: 'pi pi-cog',
-    title: 'Docker Ready',
-    description: 'Containerized development and testing environments with isolated components',
-  },
-  {
-    icon: 'pi pi-server',
-    title: 'AI Friendly',
-    description: 'Architected to work smoothly with AI tools and services out of the box',
-  },
-  {
-    icon: 'pi pi-code',
-    title: 'Full Stack',
-    description: 'Integrated frontend and backend development with modern tooling',
-  },
-])
-</script>
-
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white">
-    <!-- Hero Section -->
-    <HeroSection />
+  <div class="storm-container">
+    <div v-for="n in 5" :key="n" class="lightning" :class="`lightning-${n}`"></div>
+    <div class="storm-clouds top-left"><i class="pi pi-cloud text-indigo-800/30"></i></div>
+    <div class="storm-clouds top-right"><i class="pi pi-cloud text-indigo-800/30"></i></div>
+    <div class="storm-clouds bottom-left"><i class="pi pi-cloud text-indigo-800/30"></i></div>
+    <div class="storm-clouds bottom-right"><i class="pi pi-cloud text-indigo-800/30"></i></div>
 
-    <!-- Features Section -->
-    <section class="px-4 py-16 max-w-7xl mx-auto">
-      <h2 class="text-3xl font-bold mb-12 text-center">Why Storm Framework?</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <FeatureCard
-          v-for="(feature, index) in features"
-          :key="index"
-          :icon="feature.icon"
-          :title="feature.title"
-          :description="feature.description"
-        />
-      </div>
-    </section>
-
-    <!-- CLI Section -->
-    <section class="px-4 py-16 max-w-7xl mx-auto">
-      <CLITerminal />
-    </section>
-
-    <!-- Footer -->
-    <AppFooter />
+    <div class="storm-bolts">
+      <i v-for="n in 8" :key="`bolt-${n}`" class="pi pi-bolt storm-bolt" :class="`bolt-${n}`"></i>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.p-button {
-  transition: all 0.2s;
-}
-
-.honeycomb-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: transparent;
-  background-image:
-    radial-gradient(circle at center, rgba(99, 91, 255, 0.1) 0%, transparent 70%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='rgba(120, 110, 255, 0.18)'/%3E%3C/svg%3E");
-  opacity: 0.8;
-  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 30%, transparent 80%);
-  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 30%, transparent 80%);
-  z-index: 1;
-  pointer-events: none;
-}
-
 /* Storm Effects */
 .storm-container {
   position: absolute;
