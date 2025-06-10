@@ -18,12 +18,14 @@
       The AI-friendly fullstack framework for building modern web applications
     </p>
     <div class="flex flex-wrap justify-center gap-4 relative z-10">
-      <button
+      <router-link
+        to="/dashboard"
+        href="https://docs.stormframework.dev"
         class="p-button p-button-lg bg-indigo-600 hover:bg-indigo-700 border-indigo-600 text-white px-8 py-3 rounded-lg font-medium flex items-center gap-2"
       >
         <i class="pi pi-play"></i>
         Get Started
-      </button>
+      </router-link>
       <a
         href="https://github.com/Arsfiqball/storm"
         target="_blank"
@@ -37,6 +39,7 @@
 </template>
 
 <script setup lang="ts">
+import router from '@/router'
 import StormEffects from './StormEffects.vue'
 </script>
 
