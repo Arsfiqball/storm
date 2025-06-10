@@ -1,4 +1,4 @@
-Collecting workspace information# Storm Framework
+# Storm Framework
 
 Storm Framework is an AI-friendly fullstack framework based on Go, designed for building modern web applications. It provides a comprehensive suite of tools for development, deployment, and management with built-in AI capabilities.
 
