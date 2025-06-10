@@ -1,583 +1,358 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import Button from 'primevue/button'
-import Card from 'primevue/card'
-import Divider from 'primevue/divider'
-import Timeline from 'primevue/timeline'
+import { ref } from 'vue'
 
-const timelineItems = ref([
+const features = ref([
   {
-    title: 'Framework Inception',
-    description: 'The Storm project was born, with a vision of simplified development.',
+    icon: 'pi pi-bolt',
+    title: 'Lightning Fast',
+    description: 'Built on Go for high-performance backend operations with minimal resource usage',
   },
   {
-    title: 'First Release',
-    description: 'Version 1.0 released with core components and documentation.',
+    icon: 'pi pi-cog',
+    title: 'Docker Ready',
+    description: 'Containerized development and testing environments with isolated components',
   },
   {
-    title: 'Community Growth',
-    description: 'Developer community expanded with contributions and feedback.',
+    icon: 'pi pi-server', // or pi-cog-wheel, pi-database, pi-desktop, pi-star
+    title: 'AI Friendly',
+    description: 'Architected to work smoothly with AI tools and services out of the box',
   },
   {
-    title: 'Enterprise Adoption',
-    description: 'Major organizations began deploying Storm-based solutions.',
-  },
-  {
-    title: 'Future Roadmap',
-    description: 'Continued innovation with AI integration and expanded tooling.',
+    icon: 'pi pi-code',
+    title: 'Full Stack',
+    description: 'Integrated frontend and backend development with modern tooling',
   },
 ])
-
-// Animate lightning flashes randomly
-const triggerLightning = () => {
-  const lightning = document.querySelector('.lightning-effect')
-  if (lightning) {
-    lightning.classList.add('active')
-    setTimeout(() => {
-      lightning.classList.remove('active')
-    }, 200)
-  }
-}
-
-onMounted(() => {
-  setInterval(
-    () => {
-      // Random lightning flashes (25% chance every 5-10 seconds)
-      if (Math.random() < 0.25) {
-        triggerLightning()
-      }
-    },
-    Math.random() * 5000 + 5000,
-  )
-})
 </script>
 
 <template>
-  <div class="surface-ground px-4 py-8 md:px-6 lg:px-8">
-    <div class="hexagon-background px-4 py-8 md:px-6 lg:px-8 mb-6">
-      <!-- Lightning flash overlay -->
-      <div class="lightning-effect"></div>
+  <div class="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white">
+    <!-- Hero Section -->
+    <section class="px-4 py-24 md:py-32 max-w-7xl mx-auto text-center relative overflow-hidden">
+      <!-- Honeycomb background -->
+      <div class="honeycomb-background"></div>
 
-      <!-- Rain drops effect -->
-      <div class="rain-container">
+      <!-- Lightning Storm effects -->
+      <div class="storm-container">
+        <div v-for="n in 5" :key="n" class="lightning" :class="`lightning-${n}`"></div>
+        <div class="storm-clouds top-left"><i class="pi pi-cloud text-indigo-800/30"></i></div>
+        <div class="storm-clouds top-right"><i class="pi pi-cloud text-indigo-800/30"></i></div>
+        <div class="storm-clouds bottom-left"><i class="pi pi-cloud text-indigo-800/30"></i></div>
+        <div class="storm-clouds bottom-right"><i class="pi pi-cloud text-indigo-800/30"></i></div>
+
+        <div class="storm-bolts">
+          <i
+            v-for="n in 8"
+            :key="`bolt-${n}`"
+            class="pi pi-bolt storm-bolt"
+            :class="`bolt-${n}`"
+          ></i>
+        </div>
+      </div>
+
+      <div class="mb-8 inline-block p-2 bg-indigo-900/30 rounded-full relative z-10">
+        <i class="pi pi-bolt text-2xl text-indigo-400"></i>
+      </div>
+      <h1
+        class="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-indigo-400 to-indigo-200 bg-clip-text text-transparent relative z-10"
+      >
+        Storm Framework
+      </h1>
+      <p class="text-xl md:text-2xl mb-10 max-w-3xl mx-auto text-slate-300 relative z-10">
+        The AI-friendly fullstack framework for building modern web applications
+      </p>
+      <div class="flex flex-wrap justify-center gap-4 relative z-10">
+        <button
+          class="p-button p-button-lg bg-indigo-600 hover:bg-indigo-700 border-indigo-600 text-white px-8 py-3 rounded-lg font-medium flex items-center gap-2"
+        >
+          <i class="pi pi-play"></i>
+          Get Started
+        </button>
+        <a
+          href="https://github.com/Arsfiqball/storm"
+          target="_blank"
+          class="p-button p-button-lg p-button-outlined text-indigo-300 border-indigo-600/50 hover:border-indigo-400 px-8 py-3 rounded-lg font-medium flex items-center gap-2"
+        >
+          <i class="pi pi-github"></i>
+          GitHub
+        </a>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="px-4 py-16 max-w-7xl mx-auto">
+      <h2 class="text-3xl font-bold mb-12 text-center">Why Storm Framework?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <div
-          v-for="n in 20"
-          :key="n"
-          class="rain-drop"
-          :style="`--delay: ${(n * 0.1).toFixed(2)}s; --position: ${Math.random() * 100}%`"
-        ></div>
-      </div>
-
-      <div class="content-wrapper">
-        <div class="text-center mb-5">
-          <div class="text-900 font-bold text-5xl mb-3 storm-text">Welcome to Storm Framework</div>
-          <div class="text-600 text-xl mb-6">
-            <i class="pi pi-bolt thunderbolt-icon"></i> An AI-friendly fullstack framework built for
-            modern development <i class="pi pi-bolt thunderbolt-icon"></i>
+          v-for="(feature, index) in features"
+          :key="index"
+          class="bg-slate-800/50 p-6 rounded-xl border border-slate-700"
+        >
+          <div class="w-12 h-12 bg-indigo-900/50 rounded-lg flex items-center justify-center mb-4">
+            <i :class="feature.icon + ' text-xl text-indigo-400'"></i>
           </div>
-          <p class="text-700 line-height-3 mb-4 max-w-6 mx-auto">
-            Storm combines a powerful Go backend with a pre-configured Vue SPA frontend using
-            PrimeVue components, enabling developers to build sophisticated applications with
-            built-in AI capabilities.
-          </p>
-          <div class="flex justify-content-center">
-            <Button
-              label="Get Started"
-              icon="pi pi-rocket"
-              class="mr-3 p-button-raised pulse-btn"
-            />
-            <Button label="Documentation" icon="pi pi-book" class="p-button-outlined" />
-          </div>
-        </div>
-
-        <!-- Cloud with lightning icon -->
-        <div class="storm-cloud">
-          <i class="pi pi-cloud"></i>
-          <span class="cloud-lightning"></span>
-        </div>
-
-        <div class="grid">
-          <div class="col-12 md:col-4">
-            <Card class="shadow-2 p-3 h-full feature-card">
-              <template #title>Fast Development</template>
-              <template #content>
-                <div class="flex align-items-center mb-3">
-                  <i class="pi pi-bolt text-xl text-primary mr-2 lightning-icon"></i>
-                  <span class="text-xl font-medium">Speed Optimized</span>
-                </div>
-                <p class="text-700 line-height-3 m-0">
-                  Build applications rapidly with our streamlined workflows and ready-to-use
-                  components.
-                </p>
-              </template>
-            </Card>
-          </div>
-
-          <div class="col-12 md:col-4">
-            <Card class="shadow-2 p-3 h-full feature-card">
-              <template #title>Modern Architecture</template>
-              <template #content>
-                <div class="flex align-items-center mb-3">
-                  <i class="pi pi-cloud text-xl text-primary mr-2 cloud-icon"></i>
-                  <span class="text-xl font-medium">Future-Proof</span>
-                </div>
-                <p class="text-700 line-height-3 m-0">
-                  Built on the latest technologies and standards to ensure your projects remain
-                  maintainable.
-                </p>
-              </template>
-            </Card>
-          </div>
-
-          <div class="col-12 md:col-4">
-            <Card class="shadow-2 p-3 h-full feature-card">
-              <template #title>Responsive Design</template>
-              <template #content>
-                <div class="flex align-items-center mb-3">
-                  <i class="pi pi-mobile text-xl text-primary mr-2"></i>
-                  <span class="text-xl font-medium">Any Device</span>
-                </div>
-                <p class="text-700 line-height-3 m-0">
-                  Create applications that look and function beautifully across desktop, tablet, and
-                  mobile.
-                </p>
-              </template>
-            </Card>
-          </div>
-
-          <!-- Add a fourth card about power -->
-          <div class="col-12 md:col-6 lg:col-3 mt-4">
-            <Card class="shadow-2 p-3 h-full feature-card power-card">
-              <template #title>Powerful Backend</template>
-              <template #content>
-                <div class="flex align-items-center mb-3">
-                  <i class="pi pi-server text-xl text-primary mr-2 thunder-icon"></i>
-                  <span class="text-xl font-medium">Unlimited Power</span>
-                </div>
-                <p class="text-700 line-height-3 m-0">
-                  Harness the lightning-fast Go backend to handle any workload with exceptional
-                  performance.
-                </p>
-              </template>
-            </Card>
-          </div>
-
-          <!-- Add a fifth card about AI -->
-          <div class="col-12 md:col-6 lg:col-3 mt-4">
-            <Card class="shadow-2 p-3 h-full feature-card ai-card">
-              <template #title>AI Integration</template>
-              <template #content>
-                <div class="flex align-items-center mb-3">
-                  <i class="pi pi-bolt-circle text-xl text-primary mr-2 brain-icon"></i>
-                  <span class="text-xl font-medium">Smart Tools</span>
-                </div>
-                <p class="text-700 line-height-3 m-0">
-                  Seamlessly integrate AI capabilities that supercharge your application's
-                  intelligence.
-                </p>
-              </template>
-            </Card>
-          </div>
-
-          <!-- Add a sixth card about security -->
-          <div class="col-12 md:col-6 lg:col-3 mt-4">
-            <Card class="shadow-2 p-3 h-full feature-card security-card">
-              <template #title>Enhanced Security</template>
-              <template #content>
-                <div class="flex align-items-center mb-3">
-                  <i class="pi pi-shield text-xl text-primary mr-2 shield-icon"></i>
-                  <span class="text-xl font-medium">Built-in Protection</span>
-                </div>
-                <p class="text-700 line-height-3 m-0">
-                  Robust security features to protect your applications from common vulnerabilities
-                  and threats.
-                </p>
-              </template>
-            </Card>
-          </div>
-
-          <!-- Add a seventh card about extensibility -->
-          <div class="col-12 md:col-6 lg:col-3 mt-4">
-            <Card class="shadow-2 p-3 h-full feature-card extension-card">
-              <template #title>Extensible Platform</template>
-              <template #content>
-                <div class="flex align-items-center mb-3">
-                  <i class="pi pi-cog text-xl text-primary mr-2 gear-icon"></i>
-                  <span class="text-xl font-medium">Customize & Extend</span>
-                </div>
-                <p class="text-700 line-height-3 m-0">
-                  Easily extend functionality with plugins and customize every aspect to meet your
-                  project needs.
-                </p>
-              </template>
-            </Card>
-          </div>
+          <h3 class="text-xl font-semibold mb-2">{{ feature.title }}</h3>
+          <p class="text-slate-400">{{ feature.description }}</p>
         </div>
       </div>
-    </div>
+    </section>
 
-    <Divider class="my-6" />
-
-    <div class="content-wrapper">
-      <div class="text-center">
-        <div class="text-900 font-bold text-4xl mb-4">Framework Timeline</div>
-        <p class="text-600 mb-5">Journey through Storm Framework's development and future</p>
+    <!-- CLI Section -->
+    <section class="px-4 py-16 max-w-7xl mx-auto">
+      <div class="bg-slate-800 border border-slate-700 rounded-lg p-4 md:p-6">
+        <div class="flex items-center mb-4">
+          <div class="flex space-x-2">
+            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+          </div>
+        </div>
+        <div class="font-mono text-sm md:text-base text-slate-300 overflow-x-auto">
+          <p class="pb-2"><span class="text-indigo-400">$</span> storm init-config</p>
+          <p class="text-slate-500 pb-2">Configuration file created at ./.storm.yaml</p>
+          <p class="pb-2"><span class="text-indigo-400">$</span> storm isolate up --expose --web</p>
+          <p class="text-slate-500 pb-2">Starting isolated environment with web service...</p>
+          <p class="pb-2"><span class="text-indigo-400">$</span> docker ps</p>
+          <p class="text-slate-500">Web frontend running on :5173, backend API on :3000</p>
+        </div>
       </div>
+    </section>
 
-      <div class="card storm-timeline-card">
-        <Timeline :value="timelineItems" align="alternate" class="my-5">
-          <template #content="slotProps">
-            <div class="timeline-event">
-              <div class="text-900 font-bold mb-1">{{ slotProps.item.title }}</div>
-              <p class="m-0 text-600">{{ slotProps.item.description }}</p>
-            </div>
-          </template>
-        </Timeline>
+    <!-- Footer -->
+    <footer class="px-4 py-8 border-t border-slate-800 mt-16">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center mb-4 md:mb-0">
+          <i class="pi pi-bolt text-indigo-400 mr-2"></i>
+          <span class="font-semibold">Storm Framework</span>
+        </div>
+        <div class="text-sm text-slate-500">Built with ⚡ for AI-friendly development</div>
       </div>
-
-      <div class="mt-8 text-center">
-        <Button label="Join Our Community" icon="pi pi-users" class="p-button-lg" />
-      </div>
-    </div>
+    </footer>
   </div>
 </template>
 
 <style scoped>
-.timeline-event {
-  padding: 1rem;
-  border-radius: 12px;
-  background-color: var(--surface-card);
-  box-shadow:
-    0 2px 1px -1px rgba(0, 0, 0, 0.2),
-    0 1px 1px 0 rgba(0, 0, 0, 0.14),
-    0 1px 3px 0 rgba(0, 0, 0, 0.12);
-  transition: transform 0.2s;
+.p-button {
+  transition: all 0.2s;
 }
 
-.timeline-event:hover {
-  transform: translateY(-3px);
-}
-
-.storm-event {
-  border-left: 3px solid var(--primary-color);
-}
-
-.timeline-icon {
+.honeycomb-background {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  color: var(--primary-color);
-  font-size: 1.2rem;
-  opacity: 0.7;
-}
-
-.hexagon-background {
-  position: relative;
-  overflow: hidden;
-  background-color: var(--surface-ground);
-  border-radius: 1rem;
-}
-
-/* Simplified base layer for honeycomb pattern with reduced opacity */
-.hexagon-background::before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
   top: 0;
   left: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='rgba(89, 129, 255, 0.05)' stroke-width='1'/%3E%3Cpath d='M28 0L56 16L56 50L28 66L0 50L0 16L28 0Z' fill='rgba(89, 129, 255, 0.01)'/%3E%3C/svg%3E");
-  background-size: 56px 100px;
-  z-index: 0;
-  /* Removed mask-image gradient that caused the cloudy effect */
-}
-
-/* Removed the secondary offset layer that created additional cloudy effect */
-
-.content-wrapper {
-  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  background-image:
+    radial-gradient(circle at center, rgba(99, 91, 255, 0.1) 0%, transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='rgba(120, 110, 255, 0.18)'/%3E%3C/svg%3E");
+  opacity: 0.8;
+  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 30%, transparent 80%);
   z-index: 1;
+  pointer-events: none;
 }
 
-:root {
-  --primary-color-rgb: 89, 129, 255; /* Default primary color */
-}
-
-/* Lightning flash effect */
-.lightning-effect {
+/* Storm Effects */
+.storm-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0);
+  overflow: hidden;
+  pointer-events: none;
   z-index: 2;
-  pointer-events: none;
-  transition: background-color 0.1s;
 }
 
-.lightning-effect.active {
-  background-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 0 80px 30px rgba(89, 129, 255, 0.8);
-}
-
-/* Rain drops effect */
-.rain-container {
+.lightning {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.4;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(157, 142, 255, 0.8) 20%,
+    rgba(157, 142, 255, 0.3) 70%,
+    rgba(157, 142, 255, 0) 100%
+  );
+  opacity: 0;
+  width: 10px;
+  height: 150px;
+  transform: rotate(20deg) translateY(-100px);
+  filter: blur(3px);
+  animation: lightning-flash 8s linear infinite;
 }
 
-.rain-drop {
-  position: absolute;
-  width: 1px;
-  height: 20px;
-  background: linear-gradient(to bottom, rgba(89, 129, 255, 0), rgba(89, 129, 255, 0.7));
-  top: -20px;
-  left: var(--position);
-  animation: rain 1s linear infinite;
-  animation-delay: var(--delay);
+.lightning-1 {
+  left: 20%;
+  animation-delay: 0s;
 }
 
-@keyframes rain {
+.lightning-2 {
+  left: 40%;
+  animation-delay: 2.5s;
+}
+
+.lightning-3 {
+  left: 60%;
+  animation-delay: 4.7s;
+}
+
+.lightning-4 {
+  right: 15%;
+  animation-delay: 6.2s;
+}
+
+.lightning-5 {
+  left: 30%;
+  animation-delay: 7.5s;
+}
+
+@keyframes lightning-flash {
   0% {
-    transform: translateY(-20px);
+    opacity: 0;
+    transform: rotate(20deg) translateY(-100px);
   }
-  100% {
-    transform: translateY(calc(100vh + 20px));
+  2% {
+    opacity: 0.8;
+    transform: rotate(20deg) translateY(20px);
   }
-}
-
-/* Storm text with gradient effect */
-.storm-text {
-  background: linear-gradient(45deg, #3a6eff, #5981ff, #82a4ff);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0px 3px 7px rgba(58, 110, 255, 0.2);
-  position: relative;
-}
-
-/* Thunderbolt icon animation */
-.thunderbolt-icon {
-  color: #5981ff;
-  animation: pulse 2s infinite;
-  display: inline-block;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
+  4% {
+    opacity: 0.2;
   }
-  50% {
-    opacity: 0.6;
-    transform: scale(0.92);
+  6% {
+    opacity: 0.9;
   }
-}
-
-/* Storm cloud with lightning */
-.storm-cloud {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  font-size: 2rem;
-  color: rgba(89, 129, 255, 0.4);
-  z-index: 2;
-}
-
-.cloud-lightning {
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  width: 2px;
-  height: 15px;
-  background-color: rgba(255, 255, 255, 0.9);
-  animation: strike 5s infinite;
-  transform-origin: top;
-  z-index: 3;
-}
-
-@keyframes strike {
-  0%,
-  95%,
+  8% {
+    opacity: 0;
+    transform: rotate(20deg) translateY(100px);
+  }
   100% {
     opacity: 0;
   }
-  96%,
-  99% {
-    opacity: 1;
-  }
 }
 
-/* Feature cards enhancement */
-.feature-card {
-  transition:
-    transform 0.3s,
-    box-shadow 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-
-.feature-card::after {
-  content: '';
+.storm-clouds {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, #3a6eff, #82a4ff);
-  z-index: 1;
-  opacity: 0;
-  transition: opacity 0.3s;
+  font-size: 4rem;
+  opacity: 0.6;
+  animation: cloud-drift 20s linear infinite;
 }
 
-.feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(89, 129, 255, 0.15);
+.top-left {
+  top: 10%;
+  left: 5%;
+  animation-delay: 0s;
 }
 
-.feature-card:hover::after {
-  opacity: 1;
+.top-right {
+  top: 15%;
+  right: 5%;
+  animation-delay: 5s;
 }
 
-/* Lightning icon animation */
-.lightning-icon {
-  animation: flash 3s infinite;
+.bottom-left {
+  bottom: 10%;
+  left: 10%;
+  animation-delay: 10s;
 }
 
-@keyframes flash {
-  0%,
-  80%,
-  100% {
-    opacity: 1;
-  }
-  85%,
-  95% {
-    opacity: 0.4;
-    transform: scale(1.2);
-    color: #3a6eff;
-  }
+.bottom-right {
+  bottom: 15%;
+  right: 10%;
+  animation-delay: 15s;
 }
 
-/* Cloud icon animation */
-.cloud-icon {
-  animation: float 6s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
+@keyframes cloud-drift {
+  0% {
+    transform: translateX(0) scale(1);
   }
   50% {
-    transform: translateY(-5px);
-  }
-}
-
-/* Pulsing button effect */
-.pulse-btn {
-  animation: pulse-border 2s infinite;
-  position: relative;
-}
-
-@keyframes pulse-border {
-  0% {
-    box-shadow: 0 0 0 0 rgba(89, 129, 255, 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 6px rgba(89, 129, 255, 0);
+    transform: translateX(20px) scale(1.05);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(89, 129, 255, 0);
+    transform: translateX(0) scale(1);
   }
 }
 
-/* Thunder button style */
-.thunder-btn {
-  background: linear-gradient(45deg, #3a6eff, #5981ff);
-  border: none;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s;
-}
-
-.thunder-btn::after {
-  content: '';
+.storm-bolts {
   position: absolute;
-  top: 0;
-  left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: all 0.5s;
+  top: 0;
+  left: 0;
 }
 
-.thunder-btn:hover::after {
-  left: 100%;
+.storm-bolt {
+  position: absolute;
+  color: rgba(147, 197, 253, 0.8);
+  font-size: 1.5rem;
+  animation: bolt-flash 5s ease-in-out infinite;
 }
 
-/* Power card special styling */
-.power-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(240, 246, 255, 1));
+.bolt-1 {
+  top: 25%;
+  left: 15%;
+  animation-delay: 0.5s;
+}
+.bolt-2 {
+  top: 40%;
+  left: 80%;
+  animation-delay: 1.5s;
+}
+.bolt-3 {
+  top: 70%;
+  left: 25%;
+  animation-delay: 2.7s;
+}
+.bolt-4 {
+  top: 20%;
+  left: 60%;
+  animation-delay: 3.2s;
+}
+.bolt-5 {
+  top: 60%;
+  left: 70%;
+  animation-delay: 4.1s;
+}
+.bolt-6 {
+  top: 35%;
+  left: 30%;
+  animation-delay: 1.8s;
+}
+.bolt-7 {
+  top: 55%;
+  left: 10%;
+  animation-delay: 3.5s;
+}
+.bolt-8 {
+  top: 15%;
+  left: 85%;
+  animation-delay: 0.2s;
 }
 
-.thunder-icon {
-  animation: rumble 2s infinite;
-}
-
-@keyframes rumble {
-  0%,
+@keyframes bolt-flash {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) rotate(0deg);
+  }
+  3% {
+    opacity: 0.9;
+    transform: scale(1.2) rotate(5deg);
+  }
+  6% {
+    opacity: 0.3;
+    transform: scale(0.9) rotate(-5deg);
+  }
+  9% {
+    opacity: 0.8;
+    transform: scale(1.1) rotate(0deg);
+  }
+  12% {
+    opacity: 0;
+    transform: scale(1) rotate(0deg);
+  }
   100% {
-    transform: translateX(0);
+    opacity: 0;
   }
-  10%,
-  30%,
-  50%,
-  70%,
-  90% {
-    transform: translateX(-2px);
-  }
-  20%,
-  40%,
-  60%,
-  80% {
-    transform: translateX(2px);
-  }
-}
-
-/* AI card special styling */
-.ai-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(245, 248, 255, 1));
-}
-
-.brain-icon {
-  animation: glow 3s infinite;
-}
-
-@keyframes glow {
-  0%,
-  100% {
-    filter: drop-shadow(0 0 0 rgba(89, 129, 255, 0.5));
-  }
-  50% {
-    filter: drop-shadow(0 0 5px rgba(89, 129, 255, 0.8));
-  }
-}
-
-/* Storm timeline card */
-.storm-timeline-card {
-  background-color: var(--surface-card);
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
-  position: relative;
 }
 </style>
