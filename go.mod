@@ -3,7 +3,7 @@ module app
 go 1.24.2
 
 require (
-	github.com/Arsfiqball/codec v0.0.0-20250607120337-adc3d652e4d1
+	github.com/Arsfiqball/codec v0.0.0-20250622174858-95c503d785ee
 	github.com/ThreeDotsLabs/watermill v1.4.6
 	github.com/ThreeDotsLabs/watermill-redisstream v1.4.3
 	github.com/gocraft/work v0.5.1
@@ -25,6 +25,7 @@ require (
 )
 
 require (
+	github.com/Arsfiqball/talkback v0.0.0-20241001090102-f9dbebbabbc6
 	github.com/Rican7/retry v0.3.1 // indirect
 	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
