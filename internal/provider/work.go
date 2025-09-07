@@ -2,9 +2,11 @@ package provider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/gocraft/work"
 	"github.com/gomodule/redigo/redis"
+	"github.com/spf13/viper"
 )
 
 type Work interface {
@@ -16,16 +18,30 @@ type Work interface {
 type WorkContext struct{}
 
 func ProvideWork() (Work, error) {
-	redisPool := redis.Pool{
+	// Get Redis URL from Viper config
+	redisURL := viper.GetString("redis.url")
+	if redisURL == "" {
+		return nil, fmt.Errorf("redis URL not configured")
+	}
+
+	// Parse Redis URL and create pool
+	redisPool := &redis.Pool{
 		MaxActive: 5,
 		MaxIdle:   5,
 		Wait:      true,
 		Dial: func() (redis.Conn, error) {
-			return redis.Dial("tcp", ":6379", redis.DialPassword(""))
+			return redis.DialURL(redisURL)
 		},
 	}
 
-	pool := work.NewWorkerPool(WorkContext{}, 10, "my_app_namespace", &redisPool)
+	// Test connection to Redis
+	conn := redisPool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return nil, fmt.Errorf("failed to connect to Redis: %w", err)
+	}
+
+	pool := work.NewWorkerPool(WorkContext{}, 1, "my_app_namespace", redisPool)
 
 	return &workState{pool: pool}, nil
 }

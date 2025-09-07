@@ -6,22 +6,27 @@ services:
     volumes:
       - ./:/app/
     restart: on-failure
-    ports:
-      - "3000:3000"
     depends_on:
       postgresql:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+      zipkin:
+        condition: service_healthy
     environment:
-      # Use test enviroment
-      APP_ADDRESS: ":3000"
-      APP_DSN: "host=postgresql user=admin password=admin dbname=app port=5432"
+      # Use test environment
+      APP_SERVE_ADDR: ":3000"
+      APP_SERVE_MONITOR: ":8086"
+      APP_DATABASE_URL: "postgres://admin:admin@postgresql:5432/app?sslmode=disable"
+      APP_REDIS_URL: "redis://redis:6379/0"
+      APP_TELEMETRY_ZIPKIN_URL: "http://zipkin:9411/api/v2/spans"
+      APP_TELEMETRY_SERVICE_NAME: "app-service"
     healthcheck:
       test: ["CMD-SHELL", "cat", "/tmp/app_server_live"]
       interval: 5s
       timeout: 10s
       retries: 5
   postgresql:
-    container_name: postgres_container
     image: postgres
     environment:
       POSTGRES_USER: admin
@@ -30,13 +35,29 @@ services:
       PGDATA: /data/postgres
     volumes:
       - postgresql_data:/data/postgres
-    ports:
-      - "5432:5432"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d app -U admin"]
       interval: 10s
       timeout: 5s
+      retries: 5
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+  zipkin:
+    image: openzipkin/zipkin:latest
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:9411/health"]
+      interval: 5s
+      timeout: 3s
       retries: 5
   migrate:
     image: migrate/migrate
@@ -54,3 +75,4 @@ services:
 
 volumes:
   postgresql_data:
+  redis_data:

@@ -1,5 +1,12 @@
-tmp/
+# Configuration files
 .env
+.config.yml
+
+# Temporary files
+tmp/
+
+# Build output
+bin/
 
 # Go workspace
 go.work

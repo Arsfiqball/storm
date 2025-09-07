@@ -1,8 +1,9 @@
 package provider
 
 import (
-	"os"
+	"strings"
 
+	"github.com/spf13/viper"
 	"go.opentelemetry.io/otel"
 	stdout "go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
 	"go.opentelemetry.io/otel/exporters/zipkin"
@@ -13,7 +14,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-type OTEL interface {
+type Otel interface {
 	Provider() *sdktrace.TracerProvider
 	Tracer() trace.Tracer
 }
@@ -23,7 +24,7 @@ type otelState struct {
 	tracer   trace.Tracer
 }
 
-func ProvideOTEL() (OTEL, error) {
+func ProvideOtel() (Otel, error) {
 	var (
 		sampler  sdktrace.Sampler
 		exporter sdktrace.SpanExporter
@@ -31,31 +32,49 @@ func ProvideOTEL() (OTEL, error) {
 		err      error
 	)
 
-	if os.Getenv("ZIPKIN_URL") != "" {
-		sampler = sdktrace.AlwaysSample()
-		exporter, err = zipkin.New(os.Getenv("ZIPKIN_URL"))
+	// Get configuration from viper
+	serviceName := viper.GetString("telemetry.service_name")
+	if serviceName == "" {
+		serviceName = "app-service"
+	}
 
+	samplingStrategy := viper.GetString("telemetry.sampling")
+	zipkinURL := viper.GetString("telemetry.zipkin_url")
+
+	// Configure sampler based on configuration
+	switch strings.ToLower(samplingStrategy) {
+	case "never":
+		sampler = sdktrace.NeverSample()
+	case "traceidratio":
+		ratio := viper.GetFloat64("telemetry.sampling_ratio")
+		if ratio <= 0 {
+			ratio = 0.1 // default 10% sampling
+		}
+		sampler = sdktrace.TraceIDRatioBased(ratio)
+	case "parentbased":
+		sampler = sdktrace.ParentBased(sdktrace.AlwaysSample())
+	default:
+		// Default to AlwaysSample
+		sampler = sdktrace.AlwaysSample()
+	}
+
+	if zipkinURL != "" {
+		exporter, err = zipkin.New(zipkinURL)
 		if err != nil {
 			return nil, err
 		}
-
-		res = resource.NewWithAttributes(
-			semconv.SchemaURL,
-			semconv.ServiceNameKey.String("my_app"),
-		)
 	} else {
-		sampler = sdktrace.AlwaysSample()
 		exporter, err = stdout.New()
 
 		if err != nil {
 			return nil, err
 		}
-
-		res = resource.NewWithAttributes(
-			semconv.SchemaURL,
-			semconv.ServiceNameKey.String("my_app"),
-		)
 	}
+
+	res = resource.NewWithAttributes(
+		semconv.SchemaURL,
+		semconv.ServiceNameKey.String(serviceName),
+	)
 
 	tp := sdktrace.NewTracerProvider(
 		sdktrace.WithSampler(sampler),
@@ -74,7 +93,7 @@ func ProvideOTEL() (OTEL, error) {
 
 	return &otelState{
 		provider: tp,
-		tracer:   tp.Tracer("my_app"),
+		tracer:   tp.Tracer(serviceName),
 	}, nil
 }
 
