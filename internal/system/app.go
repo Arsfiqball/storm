@@ -14,6 +14,7 @@ var RegisterSet = wire.NewSet(
 	provider.ProvideGorm,
 	provider.ProvideWatermill,
 	provider.ProvideWork,
+	provider.ProvideEmail,
 	provider.ProvideExample,
 	wire.Struct(new(App), "*"),
 )
@@ -25,6 +26,7 @@ type App struct {
 	Watermill provider.Watermill
 	Work      provider.Work
 	Slog      provider.Slog
+	Email     provider.Email
 }
 
 func (a *App) Serve() talker.Process {
@@ -33,6 +35,7 @@ func (a *App) Serve() talker.Process {
 			a.Fiber.Serve,
 			a.Watermill.Serve,
 			a.Work.Start,
+			a.Email.Start,
 		),
 		Ready: talker.Parallel(
 			a.Fiber.Readiness,
@@ -45,42 +48,7 @@ func (a *App) Serve() talker.Process {
 				a.Work.Stop,
 			),
 			a.Gorm.Close,
-		),
-	}
-}
-
-func (a *App) ServeOnlyHTTP() talker.Process {
-	return talker.Process{
-		Start: a.Fiber.Serve,
-		Ready: talker.Parallel(
-			a.Fiber.Readiness,
-			a.Gorm.Ping,
-		),
-		Stop: talker.Sequential(
-			a.Fiber.Clean,
-			a.Gorm.Close,
-		),
-	}
-}
-
-func (a *App) ServeOnlyListener() talker.Process {
-	return talker.Process{
-		Start: a.Watermill.Serve,
-		Ready: a.Gorm.Ping,
-		Stop: talker.Sequential(
-			a.Watermill.Clean,
-			a.Gorm.Close,
-		),
-	}
-}
-
-func (a *App) ServeOnlyWorker() talker.Process {
-	return talker.Process{
-		Start: a.Work.Start,
-		Ready: a.Gorm.Ping,
-		Stop: talker.Sequential(
-			a.Work.Stop,
-			a.Gorm.Close,
+			a.Email.Stop,
 		),
 	}
 }

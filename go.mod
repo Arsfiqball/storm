@@ -4,12 +4,14 @@ go 1.24.2
 
 require (
 	github.com/Arsfiqball/codec v0.0.0-20250622174858-95c503d785ee
+	github.com/Arsfiqball/talkback v0.0.0-20241001090102-f9dbebbabbc6
 	github.com/ThreeDotsLabs/watermill v1.5.0
 	github.com/ThreeDotsLabs/watermill-redisstream v1.4.4
 	github.com/gocraft/work v0.5.1
 	github.com/gofiber/contrib/otelfiber/v2 v2.2.3
 	github.com/gofiber/fiber/v2 v2.52.6
 	github.com/gomodule/redigo v1.8.9
+	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.5.0
 	github.com/redis/go-redis/v9 v9.13.0
 	github.com/spf13/viper v1.20.1
@@ -32,7 +34,6 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20231201235250-de7065d80cb9 // indirect
 	github.com/jackc/pgx/v5 v5.5.1 // indirect
@@ -70,5 +71,7 @@ require (
 	golang.org/x/text v0.21.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/protobuf v1.36.8 // indirect
+	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
+	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

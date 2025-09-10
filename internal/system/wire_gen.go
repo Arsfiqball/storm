@@ -42,6 +42,10 @@ func New(ctx context.Context) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
+	email, err := provider.ProvideEmail()
+	if err != nil {
+		return nil, err
+	}
 	app := &App{
 		Otel:      otel,
 		Fiber:     fiber,
@@ -49,6 +53,7 @@ func New(ctx context.Context) (*App, error) {
 		Watermill: watermill,
 		Work:      work,
 		Slog:      slog,
+		Email:     email,
 	}
 	return app, nil
 }
