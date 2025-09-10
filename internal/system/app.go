@@ -14,6 +14,7 @@ var RegisterSet = wire.NewSet(
 	provider.ProvideGorm,
 	provider.ProvideWatermill,
 	provider.ProvideWork,
+	provider.ProvideEmail,
 	provider.ProvideExample,
 	wire.Struct(new(App), "*"),
 )
@@ -25,6 +26,7 @@ type App struct {
 	Watermill provider.Watermill
 	Work      provider.Work
 	Slog      provider.Slog
+	Email     provider.Email
 }
 
 func (a *App) Serve() talker.Process {
@@ -33,6 +35,7 @@ func (a *App) Serve() talker.Process {
 			a.Fiber.Serve,
 			a.Watermill.Serve,
 			a.Work.Start,
+			a.Email.Start,
 		),
 		Ready: talker.Parallel(
 			a.Fiber.Readiness,
@@ -45,6 +48,7 @@ func (a *App) Serve() talker.Process {
 				a.Work.Stop,
 			),
 			a.Gorm.Close,
+			a.Email.Stop,
 		),
 	}
 }
