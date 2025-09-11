@@ -147,7 +147,7 @@ func MakeFiber(fs FiberFeatureSet, ot Otel, lg Slog) (Fiber, error) {
 			}
 
 			// TODO: Add more context to the log if needed
-			lg.Logger().Info(c.Response().String(),
+			lg.Logger().Info("success",
 				"info", "Request completed successfully",
 				"method", c.Method(),
 				"path", c.Path(),

@@ -48,39 +48,3 @@ func (a *App) Serve() talker.Process {
 		),
 	}
 }
-
-func (a *App) ServeOnlyHTTP() talker.Process {
-	return talker.Process{
-		Start: a.Fiber.Serve,
-		Ready: talker.Parallel(
-			a.Fiber.Readiness,
-			a.Gorm.Ping,
-		),
-		Stop: talker.Sequential(
-			a.Fiber.Clean,
-			a.Gorm.Close,
-		),
-	}
-}
-
-func (a *App) ServeOnlyListener() talker.Process {
-	return talker.Process{
-		Start: a.Watermill.Serve,
-		Ready: a.Gorm.Ping,
-		Stop: talker.Sequential(
-			a.Watermill.Clean,
-			a.Gorm.Close,
-		),
-	}
-}
-
-func (a *App) ServeOnlyWorker() talker.Process {
-	return talker.Process{
-		Start: a.Work.Start,
-		Ready: a.Gorm.Ping,
-		Stop: talker.Sequential(
-			a.Work.Stop,
-			a.Gorm.Close,
-		),
-	}
-}

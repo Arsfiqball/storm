@@ -2,7 +2,7 @@
 # sh scripts/isolate_up.sh
 
 # Check if --expose flag is passed
-if [[ "$*" == *--expose* ]]; then
+if [ -n "$(echo "$*" | grep -- "--expose")" ]; then
     echo "Starting with exposed ports..."
     docker-compose -f docker-compose.isolated.yml -f docker-compose.isolated.expose.yml up --build -d
 else
