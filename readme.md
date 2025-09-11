@@ -71,13 +71,19 @@ This framework is designed to be flexible enough for any Go service development 
 ```
 storm/
 ├── bin/                # Binary artifacts
+│   └── server          # Compiled server binary
 ├── build/              # Build configurations
 │   ├── docker/         # Docker build files
+│   │   ├── dev/        # Development Docker setup
+│   │   └── prod/       # Production Docker setup
 │   └── linux/          # Linux packaging
+│       └── debian/     # Debian package build scripts
 ├── cmd/                # Application entry points
 │   └── server/         # Main server executable
+│       └── main.go
 ├── database/           # Database migrations
 │   └── postgresql/     # PostgreSQL specific migrations
+│       └── migrations/
 ├── docs/               # Documentation
 │   └── packages/       # Package-specific documentation
 ├── internal/           # Private application code
@@ -86,7 +92,17 @@ storm/
 ├── pkg/                # Public packages
 │   ├── example/        # Example package
 │   └── kernel/         # Core functionality
-└── scripts/            # Utility scripts
+├── scripts/            # Utility scripts
+├── test/               # Test files
+│   ├── component/      # Component tests
+│   └── testhelper/     # Test helper utilities
+├── tmp/                # Temporary files
+├── .air.toml           # Air configuration for hot reload
+├── .config.yml         # Application configuration
+├── docker-compose.isolated.yml        # Isolated Docker Compose
+├── docker-compose.isolated.expose.yml # Exposed ports Docker Compose
+├── go.mod              # Go module definition
+└── go.sum              # Go module checksums
 ```
 
 ## Prerequisites
@@ -95,6 +111,8 @@ storm/
 - Docker and Docker Compose
 - PostgreSQL 15+
 - Redis 7+
+- Gomarkdoc (for documentation generation)
+- Wire (for dependency injection)
 
 ## Contributing
 
