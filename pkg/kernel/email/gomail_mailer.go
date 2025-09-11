@@ -8,13 +8,13 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
-type gomailSender struct {
+type gomailMailer struct {
 	dialer  *gomail.Dialer
 	channel chan *gomail.Message
 	config  Config
 }
 
-func NewGomailSender(d *gomail.Dialer, cfg Config) (Mailer, error) {
+func NewGomailMailer(d *gomail.Dialer, cfg Config) (Mailer, error) {
 	if d == nil {
 		return nil, fmt.Errorf("gomail dialer is nil")
 	}
@@ -23,13 +23,13 @@ func NewGomailSender(d *gomail.Dialer, cfg Config) (Mailer, error) {
 		return nil, fmt.Errorf("invalid email config: %w", err)
 	}
 
-	return &gomailSender{
+	return &gomailMailer{
 		dialer:  d,
 		channel: make(chan *gomail.Message, 100),
 	}, nil
 }
 
-func (s *gomailSender) Start(ctx context.Context) error {
+func (s *gomailMailer) Start(ctx context.Context) error {
 	var sc gomail.SendCloser
 	var err error
 
@@ -67,21 +67,27 @@ func (s *gomailSender) Start(ctx context.Context) error {
 	}
 }
 
-func (s *gomailSender) Stop(ctx context.Context) error {
+func (s *gomailMailer) Stop(ctx context.Context) error {
 	close(s.channel)
 
 	return nil
 }
 
-func (s *gomailSender) Send(ctx context.Context, to, subject, body string) error {
-	m := gomail.NewMessage()
-	m.SetHeader("From", s.config.DefaultFrom)
-	m.SetHeader("To", to)
-	m.SetHeader("Subject", subject)
-	m.SetBody("text/html", body)
+func (s *gomailMailer) Send(ctx context.Context, m Message) error {
+	if m.From == "" {
+		m.From = s.config.DefaultFrom
+	}
+
+	gm := gomail.NewMessage()
+	gm.SetHeader("From", m.From)
+	gm.SetHeader("To", m.To)
+	gm.SetHeader("Subject", m.Subject)
+	gm.SetBody("text/html", m.Body)
+
+	s.channel <- gm
 
 	select {
-	case s.channel <- m:
+	case s.channel <- gm:
 		return nil
 	default:
 		return fmt.Errorf("email channel is full")

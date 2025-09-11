@@ -40,7 +40,7 @@ func ProvideEmail() (Email, error) {
 		DefaultFrom: viper.GetString("email.from"),
 	}
 
-	sender, err := email.NewGomailSender(dialer, config)
+	sender, err := email.NewGomailMailer(dialer, config)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create gomail sender: %w", err)
 	}
