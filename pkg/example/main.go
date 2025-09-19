@@ -17,31 +17,27 @@ type Example struct {
 	tracer trace.Tracer
 }
 
-func (e *Example) Fiber() *fiber.App {
-	app := fiber.New()
-
-	app.Get("/", func(c *fiber.Ctx) error {
+func (e *Example) Route(router fiber.Router) {
+	router.Get("/", func(c *fiber.Ctx) error {
 		_, span := e.tracer.Start(c.UserContext(), "example.handler")
 		defer span.End()
 
 		return c.SendString("Hello, World 👋!")
 	})
 
-	app.Get("/error", func(c *fiber.Ctx) error {
+	router.Get("/error", func(c *fiber.Ctx) error {
 		_, span := e.tracer.Start(c.UserContext(), "example.errorHandler")
 		defer span.End()
 
 		return flame.Unexpected(errors.New("an unexpected error occurred"))
 	})
 
-	app.Get("/panic", func(c *fiber.Ctx) error {
+	router.Get("/panic", func(c *fiber.Ctx) error {
 		_, span := e.tracer.Start(c.UserContext(), "example.panicHandler")
 		defer span.End()
 
 		panic("this is a panic")
 	})
-
-	return app
 }
 
 var RegisterSet = wire.NewSet(

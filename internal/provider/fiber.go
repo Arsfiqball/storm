@@ -175,7 +175,7 @@ func MakeFiber(fs FiberFeatureSet, ot Otel, lg Slog) (Fiber, error) {
 		return ctx.SendStatus(200)
 	})
 
-	app.Mount("/example", fs.Example.Fiber())
+	fs.Example.Route(app.Group("/example"))
 
 	app.Use(func(c *fiber.Ctx) error {
 		// Handle 404 Not Found
