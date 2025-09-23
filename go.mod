@@ -1,6 +1,6 @@
 module app
 
-go 1.24.2
+go 1.25
 
 require (
 	github.com/Arsfiqball/codec v0.0.0-20250622174858-95c503d785ee

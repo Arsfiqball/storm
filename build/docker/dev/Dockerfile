@@ -1,10 +1,10 @@
-FROM golang:1.24-alpine
+FROM golang:1.25-alpine
 
 WORKDIR /app
 
 ENV CGO_ENABLED=0
 RUN apk add --no-cache git
-RUN go install github.com/air-verse/air@latest
+RUN go install github.com/air-verse/air@v1.63.0
 
 # Add docker build cache for Go modules
 ENV GOMODCACHE=/go/pkg/mod
